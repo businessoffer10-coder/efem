@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Efem Pizzeria & Grill – Emlichheim</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #d9242f;
+  --red-light: #fdf1f1;
+  --red-mid: #f5c6c6;
+  --gold: #b8872a;
+  --gold-light: #fdf8f0;
+  --bg: #f7f5f2;
+  --surface: #ffffff;
+  --surface2: #f0ede8;
+  --border: #e4ddd4;
+  --text: #1a1612;
+  --text2: #5a5248;
+  --text3: #9a9087;
+  --green: #2d8a4e;
+  --green-light: #edf7f1;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; overflow-x:hidden; font-size:16px; -webkit-font-smoothing:antialiased; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:var(--surface2); }
+::-webkit-scrollbar-thumb { background:var(--red); border-radius:3px; }
+
+/* ─── NAV ─── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  background:rgba(247,245,242,0.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 2rem;
+  height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem;
+}
+.nav-logo {
+  font-family:'Bebas Neue',cursive;
+  font-size:1.9rem; letter-spacing:0.04em;
+  color:var(--text); line-height:1; flex-shrink:0;
+}
+.nav-logo span { color:var(--red); }
+
+.nav-cats {
+  display:flex; gap:0.25rem; overflow-x:auto;
+  scrollbar-width:none; flex:1; justify-content:center;
+}
+.nav-cats::-webkit-scrollbar { display:none; }
+.nav-cat {
+  padding:7px 16px; border-radius:20px;
+  font-size:0.78rem; font-weight:700; letter-spacing:0.03em;
+  white-space:nowrap; border:none; background:transparent;
+  color:var(--text2); cursor:pointer; transition:all .2s; flex-shrink:0;
+}
+.nav-cat:hover { background:var(--surface2); color:var(--text); }
+.nav-cat.active { background:var(--red); color:#fff; }
+
+.nav-actions { display:flex; gap:0.5rem; align-items:center; flex-shrink:0; }
+.nav-btn {
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--border);
+  background:var(--surface); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:1rem; transition:all .2s; position:relative;
+}
+.nav-btn:hover { border-color:var(--red); background:var(--red-light); }
+#cart-bubble {
+  position:absolute; top:-4px; right:-4px;
+  background:var(--red); color:#fff;
+  width:18px; height:18px; border-radius:50%;
+  font-size:0.6rem; font-weight:800;
+  display:none; align-items:center; justify-content:center;
+}
+
+/* ─── HERO ─── */
+#hero {
+  margin-top:60px;
+  background: linear-gradient(135deg, #1a0e08 0%, #2d1410 50%, #1a1008 100%);
+  padding:5rem 2rem 4rem;
+  text-align:center; position:relative; overflow:hidden;
+}
+.hero-pattern {
+  position:absolute; inset:0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(217,36,47,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 80% 30%, rgba(184,135,42,0.12) 0%, transparent 40%);
+}
+.hero-grid-lines {
+  position:absolute; inset:0;
+  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+.hero-inner { position:relative; z-index:1; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  border:1px solid rgba(217,36,47,0.5); color:rgba(217,36,47,0.9);
+  font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase;
+  padding:5px 16px; margin-bottom:1.5rem;
+}
+.hero-title {
+  font-family:'Bebas Neue',cursive;
+  font-size:clamp(5rem,15vw,11rem);
+  line-height:0.9; letter-spacing:0.02em;
+  color:#fff; margin-bottom:1rem;
+}
+.hero-title span { color:var(--red); }
+.hero-sub { font-size:0.8rem; letter-spacing:0.25em; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:2.5rem; }
+.hero-ctas { display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; }
+.hero-cta {
+  padding:12px 28px; font-size:0.78rem; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase; cursor:pointer;
+  transition:all .25s; border:none; text-decoration:none; display:inline-block;
+}
+.hero-cta-primary { background:var(--red); color:#fff; }
+.hero-cta-primary:hover { background:#b81e28; transform:translateY(-2px); }
+.hero-cta-outline { background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.3); }
+.hero-cta-outline:hover { border-color:rgba(255,255,255,0.7); transform:translateY(-2px); }
+
+/* Pide promo bar */
+#pide-bar {
+  background:var(--red); color:#fff;
+  padding:0.9rem 2rem;
+  display:flex; align-items:center; justify-content:center; gap:2rem;
+  flex-wrap:wrap; text-align:center;
+}
+.pide-label { font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:0.06em; }
+.pide-sub { font-size:0.8rem; opacity:.9; font-weight:500; }
+.pide-price { font-family:'Bebas Neue',cursive; font-size:2.2rem; }
+.pide-timer-box { background:rgba(0,0,0,0.2); padding:4px 14px; font-family:'Bebas Neue',cursive; font-size:1.3rem; letter-spacing:0.1em; }
+.pide-active { font-weight:800; font-size:0.85rem; letter-spacing:0.15em; animation:blink 1.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ─── MAIN LAYOUT ─── */
+main { max-width:1400px; margin:0 auto; padding:2.5rem 2rem 6rem; }
+
+/* ─── SECTION HEADER ─── */
+.sec-head { margin-bottom:1.8rem; display:flex; align-items:flex-end; gap:1rem; }
+.sec-tag { font-size:0.68rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--red); font-weight:800; }
+.sec-title { font-family:'Bebas Neue',cursive; font-size:3rem; letter-spacing:0.03em; line-height:1; color:#111; }
+.sec-count { font-size:0.78rem; color:var(--text3); margin-left:auto; font-weight:600; }
+
+/* ─── SEARCH BAR ─── */
+#search-wrap {
+  position:sticky; top:60px; z-index:100;
+  background:var(--bg); padding:1rem 0;
+  border-bottom:1px solid var(--border);
+  margin-bottom:2rem;
+}
+.search-box {
+  display:flex; align-items:center; gap:0.8rem;
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:10px; padding:0 1rem;
+  transition:border-color .2s;
+}
+.search-box:focus-within { border-color:var(--red); }
+.search-box input {
+  flex:1; padding:12px 0; background:none; border:none; outline:none;
+  font-family:'DM Sans',sans-serif; font-size:1rem; color:var(--text);
+}
+.search-box input::placeholder { color:var(--text3); }
+.search-icon { color:var(--text3); font-size:1rem; }
+.search-clear { background:none; border:none; color:var(--text3); cursor:pointer; font-size:1.1rem; padding:4px; display:none; }
+.search-clear.show { display:block; }
+
+/* ─── MENU GRID ─── */
+.menu-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.2rem; }
+
+/* ─── MENU CARD ─── */
+.mcard {
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  transition:all .25s;
+  display:flex; flex-direction:column;
+  position:relative;
+}
+.mcard:hover { box-shadow:var(--shadow-lg); border-color:rgba(217,36,47,0.25); transform:translateY(-3px); }
+.mcard.hidden { display:none; }
+
+.mcard-num {
+  position:absolute; top:10px; left:10px;
+  background:var(--red); color:#fff;
+  font-family:'Bebas Neue',cursive;
+  font-size:1rem; letter-spacing:0.08em;
+  padding:3px 10px; border-radius:6px; z-index:2; font-weight:400;
+}
+.mcard-badges { position:absolute; top:10px; right:10px; display:flex; flex-direction:column; gap:4px; align-items:flex-end; z-index:2; }
+.badge { font-size:0.62rem; font-weight:800; letter-spacing:0.1em; padding:3px 8px; border-radius:5px; text-transform:uppercase; }
+.badge-neu { background:#1a6e3a; color:#fff; }
+.badge-hot { background:#d9242f; color:#fff; }
+.badge-veg { background:#2d8a4e; color:#fff; }
+.badge-deal { background:var(--gold); color:#fff; }
+
+.mcard-body { padding:1.1rem 1.1rem 0.8rem; flex:1; padding-top:2.4rem; }
+.mcard-name { font-family:'DM Sans',sans-serif; font-size:1.15rem; font-weight:800; line-height:1.25; margin-bottom:0.4rem; color:#111; letter-spacing:-0.01em; }
+.mcard-desc { font-size:0.82rem; color:#6b6259; line-height:1.65; font-weight:400; }
+
+.mcard-sizes {
+  display:flex; gap:0.4rem; padding:0.7rem 1.1rem;
+  border-top:1px solid var(--border); flex-wrap:wrap;
+}
+.size-btn {
+  flex:1; min-width:50px; padding:5px 4px; border-radius:7px;
+  border:1.5px solid var(--border); background:transparent;
+  font-size:0.68rem; font-weight:700; cursor:pointer;
+  transition:all .18s; text-align:center; color:var(--text2);
+}
+.size-btn:hover { border-color:var(--red); color:var(--red); }
+.size-btn.sel { background:var(--red); color:#fff; border-color:var(--red); }
+.size-btn .sz-lbl { display:block; font-size:0.65rem; font-weight:700; opacity:.75; text-transform:uppercase; }
+.size-btn .sz-price { display:block; font-family:'Bebas Neue',cursive; font-size:1.15rem; letter-spacing:0.03em; }
+
+.mcard-footer {
+  padding:0.8rem 1.1rem;
+  display:flex; align-items:center; justify-content:space-between;
+  border-top:1px solid var(--border);
+}
+.mcard-price { font-family:'Bebas Neue',cursive; font-size:1.75rem; color:var(--red); letter-spacing:0.03em; }
+.mcard-actions { display:flex; gap:0.5rem; }
+.btn-customize {
+  padding:6px 12px; border-radius:8px;
+  border:1.5px solid var(--border); background:transparent;
+  font-size:0.68rem; font-weight:700; cursor:pointer;
+  color:var(--text2); transition:all .18s; letter-spacing:0.04em;
+}
+.btn-customize:hover { border-color:var(--gold); color:var(--gold); }
+.btn-add {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--red); color:#fff; border:none;
+  font-size:1.25rem; cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.btn-add:hover { background:#b81e28; transform:scale(1.1); }
+.btn-add.added { background:var(--green); animation:pop .3s ease; }
+@keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.3)} 100%{transform:scale(1)} }
+
+/* ─── DEALS SECTION ─── */
+.deals-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:1.2rem; margin-bottom:3rem; }
+.deal-card {
+  background:linear-gradient(135deg, #1a0e08, #2d1814);
+  border-radius:16px; padding:1.6rem;
+  display:flex; align-items:center; gap:1.2rem;
+  position:relative; overflow:hidden; cursor:pointer;
+  transition:transform .25s, box-shadow .25s;
+}
+.deal-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.2); }
+.deal-card::before {
+  content:''; position:absolute; top:-40%; right:-10%;
+  width:180px; height:180px; border-radius:50%;
+  background:rgba(217,36,47,0.12);
+}
+.deal-emoji { font-size:2.8rem; flex-shrink:0; position:relative; z-index:1; }
+.deal-info { flex:1; position:relative; z-index:1; }
+.deal-tag { font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:4px; }
+.deal-name { font-family:'Bebas Neue',cursive; font-size:1.5rem; color:#fff; letter-spacing:0.04em; line-height:1.15; }
+.deal-desc { font-size:0.78rem; color:rgba(255,255,255,0.65); margin-top:4px; line-height:1.5; }
+.deal-price { font-family:'Bebas Neue',cursive; font-size:2.5rem; color:var(--red); position:relative; z-index:1; flex-shrink:0; }
+.deal-add {
+  position:absolute; bottom:1rem; right:1rem;
+  background:var(--red); color:#fff; border:none;
+  padding:6px 14px; border-radius:20px;
+  font-size:0.68rem; font-weight:700; cursor:pointer;
+  letter-spacing:0.08em; text-transform:uppercase; transition:all .2s;
+}
+.deal-add:hover { background:#b81e28; }
+
+/* ─── DRINKS / SAUCES ─── */
+.drinks-layout { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:3rem; }
+@media(max-width:700px){ .drinks-layout { grid-template-columns:1fr; } }
+.drinks-panel { background:var(--surface); border:1.5px solid var(--border); border-radius:16px; overflow:hidden; }
+.drinks-panel-head {
+  padding:1rem 1.4rem; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:0.8rem;
+}
+.drinks-panel-icon { font-size:1.4rem; }
+.drinks-panel-title { font-family:'Bebas Neue',cursive; font-size:1.5rem; letter-spacing:0.04em; }
+.drinks-list { padding:0.5rem 0; }
+.drink-row {
+  display:flex; align-items:center; padding:0.75rem 1.4rem;
+  border-bottom:1px solid var(--border); gap:0.8rem;
+  transition:background .15s; cursor:pointer;
+}
+.drink-row:last-child { border-bottom:none; }
+.drink-row:hover { background:var(--surface2); }
+.drink-row:hover .drink-add { opacity:1; transform:scale(1); }
+.drink-dot { width:8px; height:8px; border-radius:50%; background:var(--border); flex-shrink:0; }
+.drink-dot.hot { background:#e05c3a; }
+.drink-dot.cold { background:#3a8fe0; }
+.drink-dot.alc { background:var(--gold); }
+.drink-name { flex:1; font-size:0.9rem; font-weight:600; color:#1a1612; }
+.drink-vol { font-size:0.66rem; color:var(--text3); flex-shrink:0; }
+.drink-price { font-family:'Bebas Neue',cursive; font-size:1.3rem; color:var(--red); flex-shrink:0; min-width:48px; text-align:right; }
+.drink-add {
+  width:28px; height:28px; border-radius:50%;
+  background:var(--red); color:#fff; border:none;
+  font-size:1rem; cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(0.7); transition:all .18s;
+}
+
+/* sauce grid */
+.sauce-grid { display:grid; grid-template-columns:1fr 1fr; gap:0; }
+.sauce-item {
+  padding:0.75rem 1.4rem; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:0.5rem; cursor:pointer; transition:background .15s;
+}
+.sauce-item:nth-child(odd) { border-right:1px solid var(--border); }
+.sauce-item:hover { background:var(--surface2); }
+.sauce-item:hover .sauce-add { opacity:1; transform:scale(1); }
+.sauce-name { font-size:0.85rem; font-weight:600; color:#1a1612; }
+.sauce-price { font-family:'Bebas Neue',cursive; font-size:1.2rem; color:var(--red); }
+.sauce-add {
+  width:24px; height:24px; border-radius:50%;
+  background:var(--red); color:#fff; border:none;
+  font-size:0.85rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(0.6); transition:all .18s;
+}
+
+/* ─── CUSTOMIZER MODAL ─── */
+#modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.55);
+  z-index:500; display:none; align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(4px);
+}
+#modal-overlay.open { display:flex; }
+#customizer {
+  background:var(--surface);
+  width:100%; max-width:560px;
+  max-height:92vh;
+  border-radius:20px 20px 0 0;
+  overflow:hidden; display:flex; flex-direction:column;
+  animation:slideUp .3s cubic-bezier(.32,1.1,.6,1);
+}
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.cust-head {
+  padding:1.2rem 1.4rem 1rem; border-bottom:1px solid var(--border);
+  display:flex; gap:1rem; align-items:flex-start;
+}
+.cust-num {
+  background:var(--red); color:#fff;
+  font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:0.06em;
+  padding:2px 9px; border-radius:6px; flex-shrink:0; margin-top:3px;
+}
+.cust-title { font-family:'DM Sans',sans-serif; font-size:1.15rem; font-weight:800; flex:1; color:#111; }
+.cust-close {
+  background:none; border:none; font-size:1.4rem; color:var(--text3);
+  cursor:pointer; transition:color .2s; flex-shrink:0;
+}
+.cust-close:hover { color:var(--red); }
+.cust-body { flex:1; overflow-y:auto; padding:1rem 1.4rem; }
+
+/* size selector inside customizer */
+.cust-sizes { display:flex; gap:0.5rem; margin-bottom:1.4rem; flex-wrap:wrap; }
+.cust-size-btn {
+  flex:1; min-width:70px; padding:10px 8px; border-radius:10px;
+  border:1.5px solid var(--border); background:transparent;
+  font-size:0.75rem; font-weight:700; cursor:pointer; text-align:center;
+  transition:all .18s; color:var(--text2);
+}
+.cust-size-btn:hover { border-color:var(--red); }
+.cust-size-btn.sel { background:var(--red); color:#fff; border-color:var(--red); }
+.cust-size-btn .sz-l { display:block; font-size:0.6rem; font-weight:500; opacity:.7; text-transform:uppercase; }
+.cust-size-btn .sz-p { display:block; font-family:'Bebas Neue',cursive; font-size:1.2rem; }
+
+.cust-section { margin-bottom:1.2rem; }
+.cust-section-title {
+  font-size:0.65rem; font-weight:800; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--text3); margin-bottom:0.7rem; padding-bottom:0.4rem; border-bottom:1px solid var(--border);
+}
+.ingredient-list { display:flex; flex-direction:column; gap:0.4rem; }
+.ingr-row {
+  display:flex; align-items:center; gap:0.8rem;
+  padding:8px 12px; border-radius:8px; background:var(--surface2);
+  transition:all .18s;
+}
+.ingr-row.removed { opacity:0.4; }
+.ingr-row.removed .ingr-name { text-decoration:line-through; }
+.ingr-icon { font-size:1rem; width:22px; text-align:center; }
+.ingr-name { flex:1; font-size:0.88rem; font-weight:600; color:#111; }
+.ingr-toggle {
+  width:32px; height:18px; border-radius:9px;
+  background:var(--green); position:relative; cursor:pointer;
+  border:none; transition:background .2s; flex-shrink:0;
+}
+.ingr-toggle.off { background:var(--border); }
+.ingr-toggle::after {
+  content:''; position:absolute; width:12px; height:12px; border-radius:50%;
+  background:#fff; top:3px; right:3px; transition:right .2s;
+}
+.ingr-toggle.off::after { right:calc(100% - 15px); }
+
+.extras-list { display:flex; flex-direction:column; gap:0.4rem; }
+.extra-row {
+  display:flex; align-items:center; gap:0.8rem;
+  padding:8px 12px; border-radius:8px; background:var(--surface2);
+  cursor:pointer; transition:all .18s;
+}
+.extra-row.sel { background:var(--red-light); border:1px solid var(--red-mid); }
+.extra-icon { font-size:1rem; width:22px; text-align:center; }
+.extra-name { flex:1; font-size:0.88rem; font-weight:600; color:#111; }
+.extra-price { font-size:0.75rem; color:var(--text3); font-weight:600; }
+.extra-check {
+  width:20px; height:20px; border-radius:50%; border:1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.7rem; transition:all .18s; flex-shrink:0; background:#fff;
+}
+.extra-row.sel .extra-check { background:var(--red); border-color:var(--red); color:#fff; }
+
+.cust-note-wrap { margin-bottom:1rem; }
+.cust-note-label { font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text3); margin-bottom:0.4rem; }
+.cust-note {
+  width:100%; padding:10px 12px; border-radius:8px;
+  border:1.5px solid var(--border); background:var(--surface2);
+  font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text);
+  resize:none; outline:none; transition:border-color .2s;
+}
+.cust-note:focus { border-color:var(--red); }
+
+.cust-footer {
+  padding:1rem 1.4rem; border-top:1px solid var(--border);
+  display:flex; align-items:center; gap:1rem;
+}
+.cust-qty {
+  display:flex; align-items:center; gap:0.6rem;
+}
+.qty-btn-c {
+  width:32px; height:32px; border-radius:50%;
+  border:1.5px solid var(--border); background:var(--surface);
+  font-size:1.1rem; cursor:pointer; transition:all .18s;
+  display:flex; align-items:center; justify-content:center; font-weight:700;
+}
+.qty-btn-c:hover { border-color:var(--red); color:var(--red); }
+.qty-val-c { font-family:'Bebas Neue',cursive; font-size:1.4rem; min-width:24px; text-align:center; }
+.cust-total { font-family:'Bebas Neue',cursive; font-size:1.5rem; color:var(--red); flex:1; text-align:center; }
+.btn-add-to-cart {
+  background:var(--red); color:#fff; border:none;
+  padding:12px 24px; border-radius:10px;
+  font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase; cursor:pointer;
+  transition:all .2s;
+}
+.btn-add-to-cart:hover { background:#b81e28; transform:translateY(-1px); }
+
+/* ─── CART DRAWER ─── */
+#cart-overlay-bg {
+  position:fixed; inset:0; background:rgba(0,0,0,0.45);
+  z-index:400; display:none; backdrop-filter:blur(4px);
+}
+#cart-overlay-bg.open { display:block; }
+#cart-drawer {
+  position:fixed; top:0; right:0; bottom:0;
+  width:min(420px,100vw); background:var(--surface);
+  border-left:1px solid var(--border); z-index:401;
+  display:flex; flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  box-shadow:-8px 0 40px rgba(0,0,0,0.08);
+}
+#cart-drawer.open { transform:translateX(0); }
+.cart-hd {
+  padding:1.2rem 1.4rem; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:0.8rem;
+}
+.cart-hd-title { font-family:'Bebas Neue',cursive; font-size:1.6rem; letter-spacing:0.04em; flex:1; }
+.cart-hd-close {
+  background:none; border:none; font-size:1.3rem;
+  color:var(--text3); cursor:pointer; transition:color .2s;
+}
+.cart-hd-close:hover { color:var(--red); }
+#cart-body { flex:1; overflow-y:auto; padding:1rem 1.4rem; }
+.cart-empty-msg { text-align:center; padding:3rem 1rem; color:var(--text3); font-size:0.85rem; }
+.cart-empty-msg .ce-icon { font-size:2.5rem; display:block; margin-bottom:0.8rem; }
+
+.citem {
+  display:flex; gap:0.8rem; padding:0.9rem 0;
+  border-bottom:1px solid var(--border); align-items:flex-start;
+}
+.citem:last-child { border-bottom:none; }
+.citem-num {
+  background:var(--red); color:#fff;
+  font-family:'Bebas Neue',cursive; font-size:0.75rem;
+  padding:1px 7px; border-radius:4px; flex-shrink:0; margin-top:3px;
+}
+.citem-info { flex:1; }
+.citem-name { font-weight:700; font-size:0.9rem; color:#111; }
+.citem-mods { font-size:0.75rem; color:#7a6e65; margin-top:3px; line-height:1.5; }
+.citem-note { font-size:0.67rem; color:var(--gold); font-style:italic; margin-top:2px; }
+.citem-bottom { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
+.citem-qty {
+  display:flex; align-items:center; gap:0.4rem;
+}
+.cqty-btn {
+  width:24px; height:24px; border-radius:50%; border:1px solid var(--border);
+  background:none; cursor:pointer; font-size:0.9rem; font-weight:700;
+  transition:all .15s; display:flex; align-items:center; justify-content:center;
+}
+.cqty-btn:hover { background:var(--red); border-color:var(--red); color:#fff; }
+.cqty-val { font-weight:700; font-size:0.85rem; min-width:20px; text-align:center; }
+.citem-price { font-family:'Bebas Neue',cursive; font-size:1.2rem; color:var(--red); margin-left:auto; }
+.citem-del { background:none; border:none; color:var(--text3); cursor:pointer; font-size:1rem; transition:color .2s; }
+.citem-del:hover { color:var(--red); }
+
+.cart-ft { padding:1.2rem 1.4rem; border-top:1px solid var(--border); }
+.cart-summary { margin-bottom:1rem; }
+.cart-summary-row { display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text2); padding:3px 0; }
+.cart-summary-row.total { font-size:1.1rem; font-weight:800; color:#111; border-top:1px solid var(--border); margin-top:6px; padding-top:8px; }
+.cart-summary-row.total span:last-child { color:var(--red); font-family:'Bebas Neue',cursive; font-size:1.6rem; }
+.cart-actions { display:flex; flex-direction:column; gap:0.6rem; }
+.cart-btn-wa {
+  display:flex; align-items:center; justify-content:center; gap:0.6rem;
+  padding:13px; background:#25d366; color:#fff; border:none;
+  border-radius:10px; font-size:0.8rem; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase; cursor:pointer;
+  text-decoration:none; transition:all .2s;
+}
+.cart-btn-wa:hover { background:#1ebe5d; }
+.cart-btn-print {
+  display:flex; align-items:center; justify-content:center; gap:0.6rem;
+  padding:11px; background:var(--surface2); color:var(--text2); border:1px solid var(--border);
+  border-radius:10px; font-size:0.78rem; font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; transition:all .2s;
+}
+.cart-btn-print:hover { border-color:var(--text2); color:var(--text); }
+.cart-btn-clear {
+  background:none; border:none; color:var(--text3); cursor:pointer;
+  font-size:0.7rem; text-align:center; text-decoration:underline; transition:color .2s;
+}
+.cart-btn-clear:hover { color:var(--red); }
+
+/* ─── PRINT ─── */
+#print-wrap { display:none; }
+@media print {
+  @page { size:A4 portrait; margin:12mm 14mm; }
+  body > *:not(#print-wrap) { display:none !important; }
+  #print-wrap { display:block !important; font-family:'DM Sans',sans-serif; color:#111; }
+  .print-no { display:none !important; }
+}
+.print-hd { display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:10px; border-bottom:2px solid #d9242f; margin-bottom:10px; }
+.print-logo { font-family:'Bebas Neue',cursive; font-size:2.6rem; color:#111; line-height:1; }
+.print-logo span { color:#d9242f; }
+.print-logo-sub { font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:#888; }
+.print-logo-addr { font-size:0.6rem; color:#777; margin-top:3px; line-height:1.6; }
+.print-tag-box { text-align:right; }
+.print-tag { display:inline-block; border:1.5px solid #d9242f; color:#d9242f; font-size:0.55rem; letter-spacing:0.18em; font-weight:800; text-transform:uppercase; padding:3px 10px; }
+.print-disclaimer { font-size:0.5rem; color:#bbb; font-style:italic; margin-top:4px; max-width:160px; text-align:right; }
+.print-meta { display:flex; justify-content:space-between; font-size:0.65rem; color:#999; margin-bottom:8px; }
+.print-table { width:100%; border-collapse:collapse; font-size:0.75rem; margin-bottom:8px; }
+.print-table th { font-size:0.55rem; letter-spacing:0.15em; text-transform:uppercase; color:#aaa; border-bottom:1px solid #ddd; padding:5px 4px; background:#fafafa; }
+.print-table th:not(:first-child) { text-align:right; }
+.print-table td { padding:5px 4px; border-bottom:1px solid #f2f2f2; vertical-align:top; }
+.print-table td:not(:first-child) { text-align:right; font-weight:600; white-space:nowrap; }
+.print-table .td-mods { font-size:0.6rem; color:#aaa; display:block; margin-top:1px; }
+.print-totals { border-top:2px solid #111; padding-top:6px; }
+.print-tot-row { display:flex; justify-content:space-between; font-size:0.72rem; color:#555; padding:2px 0; }
+.print-tot-row.big { font-size:1rem; font-weight:900; color:#111; border-top:1px solid #ddd; margin-top:4px; padding-top:6px; }
+.print-tot-row.big span:last-child { color:#d9242f; }
+.print-legal { font-size:0.5rem; color:#ccc; font-style:italic; margin-top:5px; }
+.print-ft { display:flex; justify-content:space-between; margin-top:10px; padding-top:8px; border-top:1px dashed #ddd; font-size:0.58rem; color:#bbb; line-height:1.7; }
+
+/* ─── FLOATING WA ─── */
+#wa-float {
+  position:fixed; bottom:2rem; left:2rem; z-index:300;
+  width:52px; height:52px; border-radius:50%;
+  background:#25d366; color:#fff; border:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.4rem; cursor:pointer;
+  box-shadow:0 6px 24px rgba(37,211,102,0.4);
+  transition:transform .25s, box-shadow .25s;
+  text-decoration:none;
+}
+#wa-float:hover { transform:scale(1.1); box-shadow:0 10px 32px rgba(37,211,102,0.5); }
+
+/* ─── TOAST ─── */
+#toast {
+  position:fixed; bottom:6rem; left:50%; transform:translateX(-50%) translateY(20px);
+  background:#1a1612; color:#fff;
+  padding:10px 20px; border-radius:30px; font-size:0.8rem; font-weight:600;
+  z-index:600; opacity:0; transition:all .3s; white-space:nowrap;
+  pointer-events:none;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ─── REVEAL ─── */
+.reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity:1; transform:none; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px) {
+  .nav-cats { display:none; }
+  .menu-grid { grid-template-columns:1fr; }
+  .drinks-layout { grid-template-columns:1fr; }
+  .deals-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── PRINT TEMPLATE ─── -->
+<div id="print-wrap">
+  <div class="print-hd">
+    <div>
+      <div class="print-logo">efe<span>m</span></div>
+      <div class="print-logo-sub">Pizzeria &amp; Grill · Emlichheim</div>
+      <div class="print-logo-addr">Mühlenstr. 35 · 49824 Emlichheim<br>☎ 05943 985 995 · 📱 01625 985 995</div>
+    </div>
+    <div class="print-tag-box">
+      <div class="print-tag">⚠ Bestellschein – Keine Rechnung</div>
+      <div class="print-disclaimer">Kein steuerrechtlich gültiges Dokument. Dient nur zur Bestellübersicht.</div>
+    </div>
+  </div>
+  <div class="print-meta">
+    <span id="p-date"></span>
+    <span id="p-num"></span>
+  </div>
+  <table class="print-table">
+    <thead><tr><th style="text-align:left;width:50%">Artikel</th><th>Menge</th><th>Einzelpr.</th><th>Betrag</th></tr></thead>
+    <tbody id="p-items"></tbody>
+  </table>
+  <div class="print-totals" id="p-totals"></div>
+  <div class="print-ft">
+    <div>Danke für Ihre Bestellung!<br>www.pizzeria-efem.de · efem2002emlichheim</div>
+    <div style="text-align:right">Mo–Mi 16:30–21:30 · Do 11:30–21:30<br>Fr+Sa 12:00–22:00 · So 12:00–21:00</div>
+  </div>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-logo">efe<span>m</span></div>
+  <div class="nav-cats" id="nav-cats">
+    <button class="nav-cat active" onclick="showCat('alle',this)">Alle</button>
+    <button class="nav-cat" onclick="showCat('kebap',this)">Kebap</button>
+    <button class="nav-cat" onclick="showCat('pizza',this)">Pizza</button>
+    <button class="nav-cat" onclick="showCat('veggie',this)">Veggie</button>
+    <button class="nav-cat" onclick="showCat('pasta',this)">Pasta</button>
+    <button class="nav-cat" onclick="showCat('tasche',this)">Taschenpizza</button>
+    <button class="nav-cat" onclick="showCat('salat',this)">Salat</button>
+    <button class="nav-cat" onclick="showCat('getraenke',this)">Getränke</button>
+    <button class="nav-cat" onclick="showCat('deals',this)">🔥 Angebote</button>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-btn" id="cart-fab" onclick="toggleCart()">
+      🛒
+      <span id="cart-bubble">0</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<div id="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">🍕 Pizzeria & Grill · Emlichheim</div>
+    <h1 class="hero-title">efe<span>m</span></h1>
+    <p class="hero-sub">Kebap · Pizza · Pasta · Grill · Lieferservice</p>
+    <div class="hero-ctas">
+      <a href="#main-content" class="hero-cta hero-cta-primary">Speisekarte</a>
+      <a href="https://wa.me/491625985995" target="_blank" class="hero-cta hero-cta-outline">WhatsApp Bestellen</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PIDE BAR ─── -->
+<div id="pide-bar">
+  <div>
+    <div class="pide-label">🥙 Pide Döner Special</div>
+    <div class="pide-sub">Montags – Donnerstags · mit 3 Saucen · Solange der Vorrat reicht!</div>
+  </div>
+  <div class="pide-price">€ 9,00</div>
+  <div>
+    <div id="pide-active" class="pide-active" style="display:none">🔥 JETZT AKTIV!</div>
+    <div id="pide-label-txt" style="font-size:0.65rem;opacity:.7;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:3px">Nächstes Angebot in</div>
+    <div class="pide-timer-box" id="pide-clock">--:--:--</div>
+  </div>
+</div>
+
+<!-- ─── SEARCH ─── -->
+<div id="main-content">
+<div id="search-wrap">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem;">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input id="search-in" type="text" placeholder="Suche: Pizza, Kebap, Hähnchen, Salat…" oninput="doSearch(this.value)">
+      <button class="search-clear" id="search-clr" onclick="clearSearch()">✕</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ─── MAIN ─── -->
+<main>
+
+<!-- DEALS -->
+<div id="sec-deals" class="reveal">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Tagesangebote</div>
+      <div class="sec-title">🔥 Angebote & Deals</div>
+    </div>
+  </div>
+  <div class="deals-grid" id="deals-grid"></div>
+</div>
+
+<!-- KEBAP -->
+<div id="sec-kebap" class="reveal" style="margin-top:3rem">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Handgemacht</div>
+      <div class="sec-title">Kebap Rollen & Teller</div>
+    </div>
+    <span class="sec-count" id="cnt-kebap"></span>
+  </div>
+  <div class="menu-grid" id="grid-kebap"></div>
+</div>
+
+<!-- PIZZA -->
+<div id="sec-pizza" class="reveal" style="margin-top:3rem">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Aus dem Steinofen</div>
+      <div class="sec-title">Pizza</div>
+    </div>
+    <span class="sec-count" id="cnt-pizza"></span>
+  </div>
+  <div class="menu-grid" id="grid-pizza"></div>
+</div>
+
+<!-- VEGGIE PIZZA -->
+<div id="sec-veggie" class="reveal" style="margin-top:3rem">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Vegetarisch 🌿</div>
+      <div class="sec-title">Veggie Pizza</div>
+    </div>
+    <span class="sec-count" id="cnt-veggie"></span>
+  </div>
+  <div class="menu-grid" id="grid-veggie"></div>
+</div>
+
+<!-- TASCHENPIZZA -->
+<div id="sec-tasche" class="reveal" style="margin-top:3rem">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Gefüllt & Gebacken</div>
+      <div class="sec-title">Taschenpizza</div>
+    </div>
+    <span class="sec-count" id="cnt-tasche"></span>
+  </div>
+  <div class="menu-grid" id="grid-tasche"></div>
+</div>
+
+<!-- PASTA + AUFLAUF -->
+<div id="sec-pasta" class="reveal" style="margin-top:3rem">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Hausgemacht</div>
+      <div class="sec-title">Pasta & Auflauf</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;">
+    <div>
+      <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem">Pasta · +1,50€ für 4 Brötchen</p>
+      <div class="menu-grid" id="grid-pasta" style="grid-template-columns:1fr;"></div>
+    </div>
+    <div>
+      <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem">Auflauf · +1,50€ für 4 Brötchen</p>
+      <div class="menu-grid" id="grid-auflauf" style="grid-template-columns:1fr;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SALAT -->
+<div id="sec-salat" class="reveal" style="margin-top:3rem">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Frisch & Knackig</div>
+      <div class="sec-title">Salate</div>
+    </div>
+    <span class="sec-count" id="cnt-salat"></span>
+  </div>
+  <div class="menu-grid" id="grid-salat"></div>
+  <div style="margin-top:1rem;padding:0.9rem 1.2rem;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;">
+    <span style="font-size:0.65rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--red);">Dressing:</span>
+    <span style="font-size:0.78rem;color:var(--text2);">Joghurt · French · Italien · Joppi · Granatapfel · Knoblauch</span>
+  </div>
+</div>
+
+<!-- GETRÄNKE & SAUCEN -->
+<div id="sec-getraenke" class="reveal" style="margin-top:3rem">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Zum Trinken & Dippen</div>
+      <div class="sec-title">Getränke & Saucen</div>
+    </div>
+  </div>
+  <div class="drinks-layout">
+    <!-- Cold drinks -->
+    <div class="drinks-panel">
+      <div class="drinks-panel-head">
+        <span class="drinks-panel-icon">🥤</span>
+        <span class="drinks-panel-title">Kaltgetränke</span>
+      </div>
+      <div class="drinks-list" id="dl-cold"></div>
+    </div>
+    <!-- Hot drinks -->
+    <div class="drinks-panel">
+      <div class="drinks-panel-head">
+        <span class="drinks-panel-icon">☕</span>
+        <span class="drinks-panel-title">Heißgetränke & Saucen</span>
+      </div>
+      <div class="drinks-list" id="dl-hot"></div>
+      <div class="drinks-panel-head" style="border-top:1px solid var(--border);margin-top:0.5rem;">
+        <span class="drinks-panel-icon">🥫</span>
+        <span class="drinks-panel-title">Dips & Saucen</span>
+      </div>
+      <div class="sauce-grid" id="sauce-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SNACKS -->
+<div id="sec-snacks" class="reveal" style="margin-top:3rem">
+  <div class="sec-head">
+    <div>
+      <div class="sec-tag">Extra</div>
+      <div class="sec-title">Snacks & Kids</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;">
+    <div class="menu-grid" id="grid-snacks" style="grid-template-columns:1fr;"></div>
+    <!-- Kids -->
+    <div style="background:linear-gradient(135deg,#1a0e08,#2d1814);border-radius:16px;padding:1.8rem;color:#fff;display:flex;flex-direction:column;justify-content:space-between;">
+      <div>
+        <div style="font-size:2.5rem;margin-bottom:0.6rem;">🧒</div>
+        <div style="font-family:'Bebas Neue',cursive;font-size:1.8rem;letter-spacing:0.04em;">Kids Menü</div>
+        <p style="font-size:0.72rem;color:rgba(255,255,255,0.55);margin-top:0.5rem;line-height:1.6;">kl. Pommes frites, Majo o. Ketchup<br>4 Chicken Nuggets, Multivitamin- o. Apfelsaft<br>kl. Süßigkeit</p>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1.2rem;">
+        <div style="font-family:'Bebas Neue',cursive;font-size:2.8rem;color:var(--red);">€ 6,50</div>
+        <button class="btn-add" onclick="quickAdd('Kids Menü','Kids Menü · Pommes, Nuggets, Saft, Süßigkeit',6.50,'kids')" style="width:42px;height:42px;font-size:1.3rem;">+</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ─── CUSTOMIZER MODAL ─── -->
+<div id="modal-overlay" onclick="closeCustomizer(event)">
+  <div id="customizer">
+    <div class="cust-head">
+      <div class="cust-num" id="cust-num">#00</div>
+      <div>
+        <div class="cust-title" id="cust-title">Artikel anpassen</div>
+        <div style="font-size:0.7rem;color:var(--text3);margin-top:2px" id="cust-base-desc"></div>
+      </div>
+      <button class="cust-close" onclick="closeCustomizer()">✕</button>
+    </div>
+    <div class="cust-body" id="cust-body"></div>
+    <div class="cust-footer">
+      <div class="cust-qty">
+        <button class="qty-btn-c" onclick="custQty(-1)">−</button>
+        <span class="qty-val-c" id="cust-qty">1</span>
+        <button class="qty-btn-c" onclick="custQty(1)">+</button>
+      </div>
+      <div class="cust-total" id="cust-total">€ 0,00</div>
+      <button class="btn-add-to-cart" onclick="addCustToCart()">+ In Warenkorb</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CART ─── -->
+<div id="cart-overlay-bg" onclick="toggleCart()"></div>
+<div id="cart-drawer">
+  <div class="cart-hd">
+    <div class="cart-hd-title">🛒 Bestellung</div>
+    <button class="cart-hd-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div id="cart-body"><div class="cart-empty-msg"><span class="ce-icon">🍕</span>Noch keine Artikel</div></div>
+  <div class="cart-ft" id="cart-ft" style="display:none">
+    <div class="cart-summary" id="cart-summary"></div>
+    <div class="cart-actions">
+      <a id="wa-order-link" href="#" target="_blank" class="cart-btn-wa">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Per WhatsApp bestellen
+      </a>
+      <button class="cart-btn-print" onclick="doPrint()">🖨️ Bestellschein drucken</button>
+      <button class="cart-btn-clear" onclick="clearCart()">Warenkorb leeren</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── WA FLOAT ─── -->
+<a id="wa-float" href="https://wa.me/491625985995" target="_blank">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+</a>
+
+<!-- ─── TOAST ─── -->
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════
+
+const EXTRAS_STANDARD = [
+  {id:'e1', name:'Extra Käse', price:1.00, icon:'🧀'},
+  {id:'e2', name:'Extra Scharf', price:0, icon:'🌶️'},
+  {id:'e3', name:'Jalapeños', price:1.00, icon:'🫑'},
+  {id:'e4', name:'Extra Tzatziki', price:0.50, icon:'🥣'},
+  {id:'e5', name:'Extra Sauce', price:0.50, icon:'🫙'},
+  {id:'e6', name:'Ohne Zwiebeln', price:0, icon:'🚫'},
+];
+const EXTRAS_PIZZA = [
+  {id:'p1', name:'Extra Belag (Gemüse/Käse)', price:1.00, icon:'🧀'},
+  {id:'p2', name:'Extra Belag (Fleisch/Fisch)', price:2.00, icon:'🥩'},
+  {id:'p3', name:'Extra scharf', price:0, icon:'🌶️'},
+  {id:'p4', name:'Dünn & Knusprig', price:0, icon:'🍕'},
+];
+
+const INGR = {
+  kebap:['Kebap','Tomaten','Weißkraut','Rotkraut','Zwiebeln','Eisbergsalat','Tzatziki'],
+  haehnchen:['Hähnchenfleisch','Tomaten','Weißkraut','Rotkraut','Zwiebeln','Eisbergsalat','Tzatziki'],
+  pizza_base:['Tomatensauce','Käse','Oregano'],
+  salat_base:['Eisbergsalat','Tomaten','Gurken','Zwiebeln'],
+};
+
+const dealsData = [
+  { id:'D1', emoji:'🥙', name:'Pide Döner Special', desc:'Mo–Do · mit 3 Saucen nach Wahl · Solange der Vorrat reicht', price:9.00, badge:'deal', note:'Mo–Do 11:30–21:30' },
+  { id:'D2', emoji:'🍕🥙', name:'Pizza + Kebap Rolle', desc:'1× Pizza (klein) + 1× Kebap Rolle (klein) zum Vorteilspreis', price:15.00, badge:'deal', note:'Kombideal' },
+  { id:'D3', emoji:'👨‍👩‍👧‍👦', name:'Familiendeal', desc:'2× Pizza Familie + 2× Liter Cola – gemeinsam genießen!', price:48.00, badge:'deal', note:'Ideal für 4–5 Personen' },
+  { id:'D4', emoji:'🧒', name:'Kids Kombi', desc:'Kids Menü + 1× kleine Pizza Margherita', price:12.00, badge:'deal', note:'Für die Kleinen' },
+];
+
+const kebapData = [
+  {id:'01', name:'Kebap', desc:'In Pizzateig gerollt, mit Tomaten, Weiß-, Rotkraut, Zwiebeln, Eisbergsalat und Tzatziki', cat:'kebap', ingr:'kebap', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.50},{l:'Groß',p:11.00}]},
+  {id:'02', name:'Kebap Spezial', desc:'Kebap-Rolle mit Käse überbacken', cat:'kebap', badges:['spezial'], ingr:'kebap', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.50},{l:'Groß',p:12.00}]},
+  {id:'03', name:'Kebap Hirtenkäse Spezial', desc:'Kebap-Rolle mit Hirtenkäse überbacken', cat:'kebap', badges:['spezial'], ingr:'kebap', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.50},{l:'Groß',p:12.00}]},
+  {id:'04', name:'Hähnchen Döner', desc:'Hähnchenfleisch in Pizzateig gerollt, mit Tomaten, Weiß-, Rotkraut, Zwiebeln, Eisbergsalat und Tzatziki', cat:'kebap', ingr:'haehnchen', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.50},{l:'Groß',p:11.00}]},
+  {id:'05', name:'Hähnchen Döner Spezial', desc:'Hähnchen-Rolle mit Käse überbacken', cat:'kebap', badges:['spezial'], ingr:'haehnchen', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.50},{l:'Groß',p:12.00}]},
+  {id:'06', name:'Kebap Mix', desc:'Kebap und Hähnchenfleisch in Pizzateig gerollt', cat:'kebap', ingr:'kebap', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:9.50},{l:'Groß',p:11.00}]},
+  {id:'07', name:'Chilli Cheese Kebap', desc:'Kebap mit Goudakäse, Cheddar, Jalapeños, scharfe Chili-Cheese-Sauce und Tzatziki', cat:'kebap', badges:['neu','hot'], ingr:'kebap', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.50},{l:'Groß',p:12.00}]},
+  {id:'08', name:'Türkische Pizza', desc:'Rindergehacktes in Pizzateig gerollt, mit Tomaten, Weiß-, Rotkraut, Zwiebeln, Eisbergsalat und Tzatziki', cat:'kebap', ingr:'kebap', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00}]},
+  {id:'10', name:'Kebap Teller', desc:'Kebap mit Tomaten, Weiß-, Rotkraut, Zwiebeln, Eisbergsalat, Tzatziki dazu Pommes frites oder Brot', cat:'kebap', ingr:'kebap', price:13.50},
+  {id:'11', name:'Kebap Teller Spezial', desc:'Mit Käse überbacken, dazu Pommes frites oder Brot', cat:'kebap', badges:['spezial'], ingr:'kebap', price:14.50},
+  {id:'12', name:'Hähnchen Teller', desc:'Hähnchenfleisch mit Salat, Tzatziki, dazu Pommes frites oder Brot', cat:'kebap', ingr:'haehnchen', price:13.50},
+  {id:'12a', name:'Mix Teller', desc:'Kebap und Hähnchen, Salat, Tzatziki, dazu Pommes frites oder Brot', cat:'kebap', price:14.00},
+  {id:'12b', name:'King Teller', desc:'Kebap (scharf) mit Käse, Salat, Tzatziki + hausgemachtes Lahmacun', cat:'kebap', badges:['hot'], price:15.00},
+  {id:'12c', name:'Chilli Cheese Kebap Teller', desc:'Kebap mit Chili-Cheese-Sauce und Jalapeños überbacken, Salat, Tzatziki + Pommes oder Brot', cat:'kebap', badges:['neu','hot'], price:15.00},
+  {id:'17a', name:'Falafel Rolle', desc:'Falafel in Pizzateig gerollt, mit Tomaten, saure Gurken, Eisbergsalat, Knoblauchsauce', cat:'kebap', badges:['neu','veg'], sizes:[{l:'Klein',p:7.00},{l:'Mittel',p:8.00},{l:'Groß',p:9.00}]},
+  {id:'12d', name:'Falafel Teller', desc:'8 Stück Falafel (Kichererbsen), frisches Pizzabrot, Salat und Knoblauchsauce', cat:'kebap', badges:['neu','veg'], price:12.00},
+];
+
+const pizzaData = [
+  // ── Klassiker ──
+  {id:'18', name:'Kebap Pizza', desc:'Tomatensauce, Kebap, Tomaten, Zwiebeln, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'19', name:'Hähnchen Pizza', desc:'Tomatensauce, Hähnchenfleisch, frische Paprika, Zwiebeln, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'20', name:'Pizza Mix', desc:'Tomatensauce, Kebap, Hähnchenfleisch, Tomaten, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.50},{l:'Mittel',p:10.50},{l:'Groß',p:11.50},{l:'Familie',p:23.00}]},
+  {id:'21', name:'Pizza Chef', desc:'Tomatensauce, Kebap, Knoblauchwurst, Hirtenkäse, fr. Paprika, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'22', name:'Pizza Mammamia', desc:'Tomatensauce, Kebap, Salami, Schinken, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'23', name:'Pizza Phantasia', desc:'Tomatensauce, Hähnchenfleisch, Ananas, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'24', name:'Pizza Brazil', desc:'Tomatensauce, Hähnchenfleisch, Brokkoli, Sauce Hollandaise, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.50},{l:'Mittel',p:10.50},{l:'Groß',p:11.50},{l:'Familie',p:23.00}]},
+  {id:'25', name:'Pizza Sucuk', desc:'Tomatensauce, Knoblauchwurst, Peperoni, Zwiebeln, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00},{l:'Familie',p:22.00}]},
+  {id:'26', name:'Pizza Salami', desc:'Tomatensauce, Salami, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:7.00},{l:'Mittel',p:8.00},{l:'Groß',p:9.00},{l:'Familie',p:20.00}]},
+  {id:'27', name:'Pizza Schinken', desc:'Tomatensauce, Schinken, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:7.00},{l:'Mittel',p:8.00},{l:'Groß',p:9.00},{l:'Familie',p:20.00}]},
+  {id:'28', name:'Pizza Tonno', desc:'Tomatensauce, Thunfisch, Zwiebeln, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00},{l:'Familie',p:22.00}]},
+  {id:'29', name:'Pizza Roma', desc:'Tomatensauce, Salami, Schinken, fr. Pilze, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:8.50},{l:'Mittel',p:9.50},{l:'Groß',p:10.50},{l:'Familie',p:21.00}]},
+  {id:'30', name:'Pizza Hawaii', desc:'Tomatensauce, Schinken, Ananas, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:7.50},{l:'Mittel',p:8.50},{l:'Groß',p:9.50},{l:'Familie',p:19.00}]},
+  {id:'31', name:'Pizza Prescatore', desc:'Tomatensauce, Thunfisch, Zwiebeln, fr. Pilze, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'32', name:'Pizza Salami-Tonno', desc:'Tomatensauce, Salami, Thunfisch, Zwiebeln, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'33', name:'Pizza Fantastico', desc:'Tomatensauce, Salami, fr. Pilze, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00},{l:'Familie',p:20.00}]},
+  {id:'34', name:'Pizza Malibu', desc:'Tomatensauce, Thunfisch, Ananas, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00},{l:'Familie',p:20.00}]},
+  {id:'35', name:'Pizza Euro', desc:'Tomatensauce, Schinken, Thunfisch, fr. Paprika, fr. Pilze, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'36', name:'Pizza Diabolo', desc:'Tomatensauce, Salami, fr. Pilze, fr. Paprika, Peperoni, Käse und Oregano', cat:'pizza', badges:['hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'37', name:'Pizza Vesuvio', desc:'Tomatensauce, Salami, fr. Pilze, fr. Paprika, Tabasco, Käse und Oregano', cat:'pizza', badges:['hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'39', name:'Pizza Royal', desc:'Tomatensauce, Schinken, Brokkoli, Sauce Hollandaise, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'40', name:'Pizza Mistaro', desc:'Tomatensauce, Schinken, Thunfisch, fr. Pilze, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'41', name:'Pizza Casanova', desc:'Tomatensauce, Schinken, Thunfisch, fr. Pilze, Zwiebeln, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'42', name:'Pizza Trento', desc:'Tomatensauce, Thunfisch, Oliven, gekochtes Ei, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'43', name:'Pizza Bolognese', desc:'Tomatensauce, Bolognese, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:7.50},{l:'Mittel',p:8.50},{l:'Groß',p:9.50},{l:'Familie',p:19.00}]},
+  {id:'44', name:'Pizza Vierjahreszeiten', desc:'Tomatensauce, Schinken, Salami, Peperoni, gekochtes Ei, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00},{l:'Familie',p:21.00}]},
+  {id:'45', name:'Pizza Avanti', desc:'Tomatensauce, Salami, Thunfisch, Paprika, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'46', name:'Pizza Frutti', desc:'Tomatensauce, Meeresfrüchte, frischer Knoblauch, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'47', name:'Pizza Scampi', desc:'Tomatensauce, Krabben, frischer Knoblauch, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  // ── Specials ──
+  {id:'81', name:'Pizza Hayal', desc:'Tomatensauce, Kebap, Brokkoli, Sauce Hollandaise, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'82', name:'Pizza Rüya', desc:'Tomatensauce, Hähnchen, Knoblauchwurst, Jalapeños, Sauce Hollandaise, Käse und Oregano', cat:'pizza', badges:['hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'83', name:'Pizza BBQ-Kebap', desc:'Tomatensauce, Kebap, BBQ-Sauce, fr. Pilze, Zwiebeln, Mais, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'84', name:'Pizza Deutschland', desc:'Tomatensauce, Kebap, Salami, Schinken, Knoblauchwurst, Sauce Hollandaise, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'85', name:'Pizza Tortellini', desc:'Tomatensauce, gefüllte Tortellini in Schinken-Sahne-Sauce, Schinken, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'86', name:'Pizza Spaghetti', desc:'Tomatensauce, Fadennudeln in Rinder-Bolognese-Sauce, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'87', name:'Pizza Aslan', desc:'Tomatensauce, Hähnchenbruststreifen, BBQ-Sauce, Sauce Hollandaise, Zwiebeln, Käse und Oregano', cat:'pizza', badges:['neu'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'88', name:'Pizza King', desc:'Tomatensauce, Kebap, Knoblauchwurst, fr. Pilze, fr. Paprika, Jalapeños, Hirtenkäse, Käse und Oregano', cat:'pizza', badges:['hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:11.00},{l:'Mittel',p:12.00},{l:'Groß',p:13.00},{l:'Familie',p:25.00}]},
+  {id:'89', name:'Pizza Sweet Chili Chicken', desc:'Tomatensauce, Hähnchen, Mais, Peperoni (süßscharf), fr. Paprika, Sweet-Chili-Sauce, Käse und Oregano', cat:'pizza', badges:['hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'90', name:'Pizza Steakhaus', desc:'Tomatensauce, Kebap, Sauce Hollandaise, Steakhouse-Pfeffer, Zwiebeln, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:9.50},{l:'Mittel',p:10.50},{l:'Groß',p:11.50},{l:'Familie',p:23.00}]},
+  {id:'91', name:'Cheddar Dream', desc:'Tomatensauce, Kebap, Salami, rote Peperoni, Jalapeños, Zwiebeln, Cheddar & Gouda, Oregano', cat:'pizza', badges:['hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'92', name:'Pizza Ileyna', desc:'Tomatensauce, Knoblauchwurst, Thunfisch, Sauce Hollandaise, Mais, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'93', name:'Pizza NL', desc:'Tomatensauce, Hähnchenfleisch, Schinken, Mais, Sauce Hollandaise, Knoblauchwurst, Käse und Oregano', cat:'pizza', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'93a', name:'Pizza Emmelkamp', desc:'Tomatensauce, Hähnchenbruststreifen, Mais, Brokkoli, Sauce Hollandaise, Käse und Oregano', cat:'pizza', badges:['neu'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+  {id:'93b', name:'Pizza Chili-Cheese', desc:'Tomatensauce, Kebap od. Hähnchen, Chili-Cheese-Sauce, Jalapeños, Käse und Oregano', cat:'pizza', badges:['neu','hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00},{l:'Familie',p:24.00}]},
+];
+
+// Taschenpizza
+const tascheData = [
+  {id:'58', name:'Kebap Tasche', desc:'Tomatensauce, Kebap, Tzatziki, Käse und Oregano', cat:'tasche', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00}]},
+  {id:'59', name:'Hähnchen Tasche', desc:'Tomatensauce, Hähnchenfleisch, Tzatziki, Käse und Oregano', cat:'tasche', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00}]},
+  {id:'60', name:'Türkische Tasche', desc:'Tomatensauce, Kebap, Knoblauchwurst, Hirtenkäse, Zwiebeln, Käse und Oregano', cat:'tasche', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00}]},
+  {id:'61', name:'Calzone', desc:'Tomatensauce, Salami, Schinken, Thunfisch, Spargel, fr. Pilze, Käse und Oregano', cat:'tasche', ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00}]},
+  {id:'62', name:'Mix Tasche', desc:'Tomatensauce, Kebap, Hähnchenfleisch, Tzatziki, Käse und Oregano', cat:'tasche', ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00}]},
+  {id:'62a', name:'Tayfun Tasche', desc:'Tomatensauce, Kebap, fr. Tomaten, Jalapeños, Zwiebeln, Sauce Hollandaise, Käse und Oregano', cat:'tasche', badges:['neu','hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00}]},
+  {id:'62b', name:'Chili Cheese Kebap Tasche', desc:'Tomatensauce, Kebap, Chili-Cheese-Sauce, Zwiebeln, Jalapeños, Käse und Oregano', cat:'tasche', badges:['neu','hot'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00}]},
+  {id:'62c', name:'Veggie Tasche', desc:'Tomatensauce, Brokkoli, fr. Paprika, fr. Pilze, Mais, Sauce Hollandaise, Käse und Oregano', cat:'tasche', badges:['neu','veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:10.00},{l:'Mittel',p:11.00},{l:'Groß',p:12.00}]},
+];
+
+const veggieData = [
+  {id:'48', name:'Pizza Margherita', desc:'Tomatensauce, Käse und Oregano', cat:'veggie', badges:['veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:6.00},{l:'Mittel',p:7.00},{l:'Groß',p:8.00},{l:'Familie',p:16.00}]},
+  {id:'49', name:'Pizza Funghi', desc:'Frische Pilze, Käse', cat:'veggie', badges:['veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:7.00},{l:'Mittel',p:8.00},{l:'Groß',p:9.00},{l:'Familie',p:19.00}]},
+  {id:'50', name:'Pizza Paprika', desc:'Frische Paprika, Zwiebeln', cat:'veggie', badges:['veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:7.00},{l:'Mittel',p:8.00},{l:'Groß',p:9.00},{l:'Familie',p:19.00}]},
+  {id:'51', name:'Pizza Ananas', desc:'Ananas, Käse', cat:'veggie', badges:['veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:7.00},{l:'Mittel',p:8.00},{l:'Groß',p:9.00},{l:'Familie',p:19.00}]},
+  {id:'52', name:'Pizza Mozzarella', desc:'Mozzarella, fr. Tomaten', cat:'veggie', badges:['veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00},{l:'Familie',p:20.00}]},
+  {id:'55', name:'Pizza Brokkoli', desc:'Brokkoli, Sauce Hollandaise', cat:'veggie', badges:['veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00},{l:'Familie',p:20.00}]},
+  {id:'56', name:'Pizza Italia', desc:'Hirtenkäse, fr. Paprika, Zwiebeln', cat:'veggie', badges:['veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:8.00},{l:'Mittel',p:9.00},{l:'Groß',p:10.00},{l:'Familie',p:20.00}]},
+  {id:'57', name:'Pizza Vegetaria', desc:'fr. Paprika, fr. Tomaten, Spargel, Mais, Zwiebeln', cat:'veggie', badges:['veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+  {id:'57a', name:'Pizza 4Käse', desc:'Hirtenkäse, Cheddar, Mozzarella + Käse', cat:'veggie', badges:['neu','veg'], ingr:'pizza_base', sizes:[{l:'Klein',p:9.00},{l:'Mittel',p:10.00},{l:'Groß',p:11.00},{l:'Familie',p:22.00}]},
+];
+
+const pastaData = [
+  {id:'63', name:'Spaghetti Bolognese', desc:'Fadennudeln in Rinder-Bolognese-Sauce, mit Käse überbacken', cat:'pasta', price:10.00},
+  {id:'64', name:'Tortellini Spezial', desc:'Mit Thunfisch in Schinken-Sahne-Sauce', cat:'pasta', price:12.00},
+  {id:'65', name:'Tortellini', desc:'In Schinken-Sahne-Sauce, mit Käse überbacken', cat:'pasta', price:10.00},
+  {id:'66', name:'Rigatoni Tonno', desc:'Mit Thunfisch in Sahne-Sauce, mit Käse überbacken', cat:'pasta', badges:['neu'], price:11.00},
+  {id:'66a', name:'Rigatoni Pollo', desc:'Mit Hähnchenstreifen, Brokkoli, Paprika, Sahne-Sauce', cat:'pasta', badges:['neu'], price:12.00},
+  {id:'67p', name:'Rigatoni Chef', desc:'Mit Kebap, Zwiebeln, fr. Pilze, in Sahne-Sauce', cat:'pasta', badges:['neu'], price:12.00},
+];
+const auflaufData = [
+  {id:'67', name:'Brazil-Auflauf', desc:'Kartoffel-Gratin, Hähnchen, Brokkoli, Sauce Hollandaise', cat:'auflauf', price:10.00},
+  {id:'68', name:'Gemüse-Auflauf', desc:'Kartoffel-Gratin, Paprika, Brokkoli, fr. Pilze', cat:'auflauf', badges:['veg'], price:10.00},
+  {id:'69', name:'Kebap-Auflauf', desc:'Kartoffel-Gratin, Kebap, fr. Pilze, Rahm-Sauce', cat:'auflauf', price:10.00},
+  {id:'69a', name:'Emlichheim-Auflauf', desc:'Kartoffel-Gratin, Hähnchenbruststreifen, Mais, Brokkoli, Sauce Hollandaise', cat:'auflauf', badges:['neu'], price:10.00},
+];
+
+const salatData = [
+  {id:'70', name:'Chefsalat', desc:'Eisbergsalat, Tomaten, Gurken, Thunfisch, Hirtenkäse und Ei', cat:'salat', price:9.00},
+  {id:'71', name:'Gemischter Salat', desc:'Eisbergsalat, Tomaten, Gurken und Zwiebeln', cat:'salat', price:4.50, price2:7.00},
+  {id:'72', name:'Thunfisch Salat', desc:'Eisbergsalat, Tomaten, Gurken und Thunfisch', cat:'salat', price:9.00},
+  {id:'73', name:'Cobansalat', desc:'Eisbergsalat, Tomaten, Gurken, Hirtenkäse, Peperoni und Zwiebeln', cat:'salat', price:8.00},
+  {id:'74', name:'Hähnchensalat', desc:'Eisbergsalat, Tomaten, Gurken, Hähnchenfleisch, Zwiebeln und Käse', cat:'salat', price:10.00},
+  {id:'75', name:'Spezialsalat', desc:'Eisbergsalat, Tomaten, Gurken, fr. Paprika, Mais, Thunfisch, Schinken, Ei und Käse', cat:'salat', price:10.00},
+  {id:'76', name:'Hirtensalat', desc:'Eisbergsalat, Tomaten, Gurken, Hirtenkäse und Oliven', cat:'salat', price:7.50},
+  {id:'89', name:'Kebap Salat', desc:'Eisbergsalat, Tomaten, Gurken, Kebap, Zwiebeln und Käse', cat:'salat', price:10.00},
+  {id:'79', name:'Fit Industry Salat', desc:'Eisbergsalat, Hähnchenbruststreifen, Tomaten, Gurken, Mais, fr. Paprika und Zwiebeln', cat:'salat', badges:['neu'], price:10.00},
+];
+
+const coldDrinks = [
+  {name:'Cola / Cola light / Zero', vol:'0,33l', price:2.75, type:'cold'},
+  {name:'Fanta / Sprite', vol:'0,33l', price:2.75, type:'cold'},
+  {name:'Vitamalz', vol:'0,33l', price:2.75, type:'cold'},
+  {name:'Wasser', vol:'0,33l', price:2.75, type:'cold'},
+  {name:'Ayran', vol:'0,20l', price:2.00, type:'cold'},
+  {name:'Red Bull', vol:'0,30l', price:3.00, type:'cold'},
+  {name:'Fuzetea', vol:'0,33l', price:3.00, type:'cold'},
+  {name:'Multivitaminsaft / Apfelsaft', vol:'0,20l', price:2.75, type:'cold'},
+  {name:'Veltins / Krombacher', vol:'0,33l', price:2.75, type:'alc'},
+  {name:'Krombacher Radler', vol:'0,33l', price:2.75, type:'alc'},
+  {name:'Weizen (auch alkoholfrei)', vol:'0,50l', price:4.00, type:'alc'},
+  {name:'Rotwein (lieblich oder trocken)', vol:'0,20l', price:4.00, type:'alc'},
+  {name:'Weißwein (lieblich oder trocken)', vol:'0,20l', price:4.00, type:'alc'},
+  {name:'Cola / Fanta / Sprite (Außer Haus)', vol:'1,0l Fl.', price:3.50, type:'cold'},
+];
+const hotDrinks = [
+  {name:'Café Cream', vol:'0,20l', price:2.50, type:'hot'},
+  {name:'Cappuccino', vol:'0,20l', price:3.00, type:'hot'},
+  {name:'Coffee To Go', vol:'0,20l', price:2.50, type:'hot'},
+  {name:'Schwarzer Tee', vol:'0,20l', price:2.50, type:'hot'},
+  {name:'Pfefferminz Tee', vol:'0,20l', price:2.50, type:'hot'},
+];
+const saucesData = [
+  {name:'Tzatziki', price:2.00},{name:'Kräuterbutter', price:2.00},
+  {name:'Knoblauch', price:2.00},{name:'Cocktailsauce', price:2.00},
+  {name:'Joppiesauce', price:2.00, new:true},{name:'Ezme', price:3.00, new:true},
+  {name:'French', price:2.00},{name:'Chili-Cheese-Sauce', price:2.50, new:true},
+];
+const snacksData = [
+  {id:'78', name:'Brot', desc:'Kleines / Mittleres / Großes', cat:'snacks', price:1.50},
+  {id:'79', name:'Käsebrot', desc:'Fladenbrot mit Käse überbacken', cat:'snacks', price:3.00},
+  {id:'79a', name:"Mama's Favorite", desc:'Fladenbrot mit Käse, Feta, Jalapeños', cat:'snacks', badges:['neu','hot'], price:5.00},
+  {id:'80', name:'Pizzabrötchen', desc:'6 Stück Minibrötchen mit Dip', cat:'snacks', price:4.50},
+  {id:'81', name:'Chicken Nuggets', desc:'6 Stück mit Dip', cat:'snacks', badges:['neu'], price:4.50},
+  {id:'82', name:'Mozzarella Sticks', desc:'4 Stück mit Dip', cat:'snacks', badges:['neu'], price:5.00},
+  {id:'100', name:'Pommes frites', desc:'Mit Mayo oder Ketchup', cat:'snacks', price:4.00},
+];
+
+// ══════════════════════════════════════════════════════
+//  RENDER CARDS
+// ══════════════════════════════════════════════════════
+function badgeHTML(b) {
+  const map = {neu:'badge-neu',hot:'badge-hot',veg:'badge-veg',deal:'badge-deal',spezial:'badge-hot'};
+  const lbl = {neu:'NEU',hot:'🌶',veg:'🌿',deal:'DEAL',spezial:'★'};
+  return `<span class="badge ${map[b]||'badge-neu'}">${lbl[b]||b}</span>`;
+}
+
+function makeCard(item) {
+  const hasSizes = item.sizes && item.sizes.length;
+  const basePrice = hasSizes ? item.sizes[0].p : (item.price || 0);
+  const badges = (item.badges||[]).map(badgeHTML).join('');
+  const priceHTML = item.price2
+    ? `<span class="mcard-price">€ ${item.price.toFixed(2).replace('.',',')} / ${item.price2.toFixed(2).replace('.',',')}</span>`
+    : `<span class="mcard-price">€ ${basePrice.toFixed(2).replace('.',',')}</span>`;
+
+  const sizesHTML = hasSizes ? `<div class="mcard-sizes">${
+    item.sizes.map((s,i) => `<button class="size-btn${i===0?' sel':''}" onclick="selectSize(this,${s.p})" data-price="${s.p}">
+      <span class="sz-lbl">${s.l}</span>
+      <span class="sz-price">€${s.p.toFixed(2).replace('.',',')}</span>
+    </button>`).join('')
+  }</div>` : '';
+
+  return `<div class="mcard" data-id="${item.id}" data-cat="${item.cat}" data-name="${item.name}" data-price="${basePrice}" data-ingr="${item.ingr||''}">
+    <div class="mcard-num">${item.id}</div>
+    <div class="mcard-badges">${badges}</div>
+    <div class="mcard-body">
+      <div class="mcard-name">${item.name}</div>
+      <div class="mcard-desc">${item.desc}</div>
+    </div>
+    ${sizesHTML}
+    <div class="mcard-footer">
+      <div id="price-${item.id}">${priceHTML}</div>
+      <div class="mcard-actions">
+        <button class="btn-customize" onclick="openCustomizer('${item.id}')">✏ Anpassen</button>
+        <button class="btn-add" onclick="quickAddCard(this,'${item.id}')">+</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderGrid(id, data) {
+  const el = document.getElementById(id);
+  if(el) {
+    el.innerHTML = data.map(makeCard).join('');
+    const cnt = document.getElementById('cnt-'+id.replace('grid-',''));
+    if(cnt) cnt.textContent = data.length + ' Artikel';
+  }
+}
+
+function makeDealCard(d) {
+  return `<div class="deal-card" onclick="quickAdd('${d.name}','${d.desc}',${d.price},'deal')">
+    <div class="deal-emoji">${d.emoji}</div>
+    <div class="deal-info">
+      <div class="deal-tag">⭐ ${d.note}</div>
+      <div class="deal-name">${d.name}</div>
+      <div class="deal-desc">${d.desc}</div>
+    </div>
+    <div>
+      <div class="deal-price">€${d.price.toFixed(2).replace('.',',')}</div>
+    </div>
+    <button class="deal-add">+ Bestellen</button>
+  </div>`;
+}
+
+function makeDrinkRow(d) {
+  const dotClass = d.type==='hot'?'hot': d.type==='alc'?'alc':'cold';
+  return `<div class="drink-row" onclick="quickAdd('${d.name}','${d.vol}',${d.price},'drink')">
+    <div class="drink-dot ${dotClass}"></div>
+    <div class="drink-name">${d.name}</div>
+    <div class="drink-vol">${d.vol}</div>
+    <div class="drink-price">€${d.price.toFixed(2).replace('.',',')}</div>
+    <button class="drink-add" onclick="event.stopPropagation();quickAdd('${d.name}','${d.vol}',${d.price},'drink')">+</button>
+  </div>`;
+}
+
+function makeSauceItem(s) {
+  return `<div class="sauce-item" onclick="quickAdd('${s.name}','Dip / Sauce',${s.price},'sauce')">
+    <div>
+      <div class="sauce-name">${s.name}${s.new?' <span style="font-size:0.55rem;color:var(--green);font-weight:800">NEU</span>':''}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.4rem;">
+      <div class="sauce-price">€${s.price.toFixed(2).replace('.',',')}</div>
+      <button class="sauce-add">+</button>
+    </div>
+  </div>`;
+}
+
+function makeSnackCard(item) {
+  const badges = (item.badges||[]).map(badgeHTML).join('');
+  return `<div class="mcard" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">
+    <div class="mcard-num">${item.id}</div>
+    <div class="mcard-badges">${badges}</div>
+    <div class="mcard-body">
+      <div class="mcard-name">${item.name}</div>
+      <div class="mcard-desc">${item.desc}</div>
+    </div>
+    <div class="mcard-footer">
+      <span class="mcard-price">€ ${item.price.toFixed(2).replace('.',',')}</span>
+      <div class="mcard-actions">
+        <button class="btn-add" onclick="quickAdd('${item.name}','${item.desc}',${item.price},'snack');this.classList.add('added');setTimeout(()=>this.classList.remove('added'),600)">+</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// Initial render
+document.getElementById('deals-grid').innerHTML = dealsData.map(makeDealCard).join('');
+renderGrid('grid-kebap', kebapData);
+renderGrid('grid-pizza', pizzaData);
+renderGrid('grid-veggie', veggieData);
+renderGrid('grid-tasche', tascheData);
+renderGrid('grid-pasta', pastaData);
+renderGrid('grid-auflauf', auflaufData);
+renderGrid('grid-salat', salatData);
+document.getElementById('dl-cold').innerHTML = coldDrinks.map(makeDrinkRow).join('');
+document.getElementById('dl-hot').innerHTML = hotDrinks.map(makeDrinkRow).join('');
+document.getElementById('sauce-grid').innerHTML = saucesData.map(makeSauceItem).join('');
+document.getElementById('grid-snacks').innerHTML = snacksData.map(makeSnackCard).join('');
+
+// ══════════════════════════════════════════════════════
+//  SIZE SELECTION
+// ══════════════════════════════════════════════════════
+function selectSize(btn, price) {
+  const card = btn.closest('.mcard');
+  card.querySelectorAll('.size-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  card.dataset.price = price;
+  const priceEl = document.getElementById('price-' + card.dataset.id);
+  if(priceEl) priceEl.innerHTML = `<span class="mcard-price">€ ${price.toFixed(2).replace('.',',')}</span>`;
+}
+
+// ══════════════════════════════════════════════════════
+//  CUSTOMIZER
+// ══════════════════════════════════════════════════════
+let custState = { item:null, qty:1, removed:[], extras:[], size:0, note:'' };
+
+function openCustomizer(id) {
+  const allData = [...kebapData,...pizzaData,...veggieData,...tascheData,...pastaData,...auflaufData,...salatData];
+  const item = allData.find(i => i.id === id);
+  if(!item) return;
+
+  const card = document.querySelector(`.mcard[data-id="${id}"]`);
+  const curPrice = card ? parseFloat(card.dataset.price) : (item.price || (item.sizes?item.sizes[0].p:0));
+
+  custState = { item, qty:1, removed:[], extras:[], note:'', selectedPrice: curPrice, selectedSizeLbl: item.sizes?item.sizes[0].l:'' };
+
+  document.getElementById('cust-num').textContent = '#' + item.id;
+  document.getElementById('cust-title').textContent = item.name;
+  document.getElementById('cust-base-desc').textContent = item.desc;
+  document.getElementById('cust-qty').textContent = '1';
+
+  // Build body
+  let html = '';
+
+  // Sizes
+  if(item.sizes && item.sizes.length) {
+    html += `<div class="cust-section">
+      <div class="cust-section-title">Größe wählen</div>
+      <div class="cust-sizes">
+        ${item.sizes.map((s,i) => `<button class="cust-size-btn${i===0?' sel':''}" onclick="custSelectSize(this,${s.p},'${s.l}')">
+          <span class="sz-l">${s.l}</span>
+          <span class="sz-p">€${s.p.toFixed(2).replace('.',',')}</span>
+        </button>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Ingredients
+  const ingrList = INGR[item.ingr] || [];
+  if(ingrList.length) {
+    const icons = {
+      'Kebap':'🥩','Hähnchenfleisch':'🐔','Tomaten':'🍅','Weißkraut':'🥬','Rotkraut':'🥬',
+      'Zwiebeln':'🧅','Eisbergsalat':'🥗','Tzatziki':'🥣','Tomatensauce':'🍅','Käse':'🧀',
+      'Oregano':'🌿','default':'✓'
+    };
+    html += `<div class="cust-section">
+      <div class="cust-section-title">Zutaten entfernen</div>
+      <div class="ingredient-list">
+        ${ingrList.map(ing => `<div class="ingr-row" id="ingr-${ing.replace(/\s/g,'_')}">
+          <span class="ingr-icon">${icons[ing]||icons.default}</span>
+          <span class="ingr-name">${ing}</span>
+          <button class="ingr-toggle" onclick="toggleIngr(this,'${ing}')"></button>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Extras
+  const extrasPool = (item.cat==='pizza'||item.cat==='veggie') ? EXTRAS_PIZZA : EXTRAS_STANDARD;
+  html += `<div class="cust-section">
+    <div class="cust-section-title">Extras hinzufügen</div>
+    <div class="extras-list">
+      ${extrasPool.map(e => `<div class="extra-row" onclick="toggleExtra(this,'${e.id}','${e.name}',${e.price})">
+        <span class="extra-icon">${e.icon}</span>
+        <span class="extra-name">${e.name}</span>
+        <span class="extra-price">${e.price>0?'+ € '+e.price.toFixed(2).replace('.',','):'Kostenlos'}</span>
+        <div class="extra-check">✓</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+
+  // Note
+  html += `<div class="cust-note-wrap">
+    <div class="cust-note-label">Anmerkung / Sonderwünsche</div>
+    <textarea class="cust-note" rows="2" placeholder="z.B. extra scharf, ohne Salz…" oninput="custState.note=this.value"></textarea>
+  </div>`;
+
+  document.getElementById('cust-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  updateCustTotal();
+}
+
+function custSelectSize(btn, price, lbl) {
+  document.querySelectorAll('.cust-size-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  custState.selectedPrice = price;
+  custState.selectedSizeLbl = lbl;
+  updateCustTotal();
+}
+
+function toggleIngr(btn, name) {
+  btn.classList.toggle('off');
+  const row = btn.closest('.ingr-row');
+  row.classList.toggle('removed');
+  const idx = custState.removed.indexOf(name);
+  if(idx >= 0) custState.removed.splice(idx,1);
+  else custState.removed.push(name);
+}
+
+function toggleExtra(row, id, name, price) {
+  row.classList.toggle('sel');
+  const idx = custState.extras.findIndex(e => e.id===id);
+  if(idx >= 0) custState.extras.splice(idx,1);
+  else custState.extras.push({id,name,price});
+  updateCustTotal();
+}
+
+function custQty(d) {
+  custState.qty = Math.max(1, custState.qty + d);
+  document.getElementById('cust-qty').textContent = custState.qty;
+  updateCustTotal();
+}
+
+function updateCustTotal() {
+  const base = custState.selectedPrice || (custState.item.price || 0);
+  const ext = custState.extras.reduce((s,e) => s+e.price, 0);
+  const total = (base + ext) * custState.qty;
+  document.getElementById('cust-total').textContent = '€ ' + total.toFixed(2).replace('.',',');
+}
+
+function addCustToCart() {
+  const item = custState.item;
+  const base = custState.selectedPrice || (item.price || 0);
+  const extPrice = custState.extras.reduce((s,e) => s+e.price, 0);
+  const unitPrice = base + extPrice;
+
+  const mods = [];
+  if(custState.selectedSizeLbl) mods.push('Größe: ' + custState.selectedSizeLbl);
+  if(custState.removed.length) mods.push('Ohne: ' + custState.removed.join(', '));
+  if(custState.extras.length) mods.push('Extra: ' + custState.extras.map(e=>e.name).join(', '));
+
+  cart.push({
+    id: item.id,
+    name: item.name,
+    price: unitPrice,
+    qty: custState.qty,
+    mods: mods.join(' · '),
+    note: custState.note
+  });
+
+  closeCustomizer();
+  renderCart();
+  toast(`✅ ${item.name} hinzugefügt`);
+}
+
+function closeCustomizer(e) {
+  if(e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ══════════════════════════════════════════════════════
+//  CART
+// ══════════════════════════════════════════════════════
+let cart = [];
+
+function quickAdd(name, desc, price, type) {
+  const existing = cart.find(i => i.name===name && !i.mods && !i.note);
+  if(existing) { existing.qty++; }
+  else { cart.push({id:type,name,price,qty:1,mods:'',note:''}); }
+  renderCart();
+  toast(`✅ ${name} hinzugefügt`);
+}
+
+function quickAddCard(btn, id) {
+  const card = document.querySelector(`.mcard[data-id="${id}"]`);
+  if(!card) return;
+  const name = card.dataset.name;
+  const price = parseFloat(card.dataset.price);
+  const selSizeBtn = card.querySelector('.size-btn.sel');
+  const sizeLbl = selSizeBtn ? selSizeBtn.querySelector('.sz-lbl').textContent : '';
+  const mods = sizeLbl ? 'Größe: ' + sizeLbl : '';
+
+  const existing = cart.find(i => i.name===name && i.mods===mods);
+  if(existing) { existing.qty++; }
+  else { cart.push({id, name, price, qty:1, mods, note:''}); }
+
+  btn.classList.add('added');
+  setTimeout(()=>btn.classList.remove('added'),600);
+  renderCart();
+  toast(`✅ ${name} hinzugefügt`);
+}
+
+function renderCart() {
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+  const total = cart.reduce((s,i)=>s+(i.price*i.qty),0);
+
+  // Badge
+  const bubble = document.getElementById('cart-bubble');
+  bubble.textContent = count;
+  bubble.style.display = count ? 'flex' : 'none';
+
+  const body = document.getElementById('cart-body');
+  const ft = document.getElementById('cart-ft');
+
+  if(!cart.length) {
+    body.innerHTML = '<div class="cart-empty-msg"><span class="ce-icon">🍕</span>Noch keine Artikel</div>';
+    ft.style.display = 'none';
+    return;
+  }
+
+  ft.style.display = 'block';
+  body.innerHTML = cart.map((item,i) => `
+    <div class="citem">
+      <div class="citem-num">${item.id}</div>
+      <div class="citem-info">
+        <div class="citem-name">${item.name}</div>
+        ${item.mods ? `<div class="citem-mods">${item.mods}</div>` : ''}
+        ${item.note ? `<div class="citem-note">📝 ${item.note}</div>` : ''}
+        <div class="citem-bottom">
+          <div class="citem-qty">
+            <button class="cqty-btn" onclick="changeQty(${i},-1)">−</button>
+            <span class="cqty-val">${item.qty}</span>
+            <button class="cqty-btn" onclick="changeQty(${i},1)">+</button>
+          </div>
+          <button class="citem-del" onclick="removeItem(${i})">🗑</button>
+          <span class="citem-price">€ ${(item.price*item.qty).toFixed(2).replace('.',',')}</span>
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('cart-summary').innerHTML = `
+    <div class="cart-summary-row"><span>Artikel</span><span>${count} Stück</span></div>
+    <div class="cart-summary-row total"><span>Gesamtbetrag</span><span>€ ${total.toFixed(2).replace('.',',')}</span></div>`;
+
+  // WhatsApp link
+  let msg = '🍕 *Bestellung – Efem Pizzeria & Grill*\n\n';
+  cart.forEach(item => {
+    msg += `• ${item.qty}× ${item.name}`;
+    if(item.mods) msg += ` (${item.mods})`;
+    if(item.note) msg += ` [${item.note}]`;
+    msg += ` = €${(item.price*item.qty).toFixed(2).replace('.',',')}\n`;
+  });
+  msg += `\n*Gesamt: €${total.toFixed(2).replace('.',',')}*`;
+  document.getElementById('wa-order-link').href = `https://wa.me/491625985995?text=${encodeURIComponent(msg)}`;
+}
+
+function changeQty(i, d) {
+  cart[i].qty += d;
+  if(cart[i].qty <= 0) cart.splice(i,1);
+  renderCart();
+}
+function removeItem(i) { cart.splice(i,1); renderCart(); }
+function clearCart() { if(confirm('Warenkorb leeren?')){ cart=[]; renderCart(); } }
+
+function toggleCart() {
+  document.getElementById('cart-drawer').classList.toggle('open');
+  document.getElementById('cart-overlay-bg').classList.toggle('open');
+}
+
+// ══════════════════════════════════════════════════════
+//  PRINT
+// ══════════════════════════════════════════════════════
+function doPrint() {
+  if(!cart.length) { toast('❌ Keine Artikel im Warenkorb'); return; }
+  const now = new Date();
+  document.getElementById('p-date').textContent =
+    now.toLocaleDateString('de-DE',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) +
+    ' · ' + now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) + ' Uhr';
+  document.getElementById('p-num').textContent =
+    'BS-' + now.getFullYear().toString().slice(-2) +
+    String(now.getMonth()+1).padStart(2,'0') +
+    String(now.getDate()).padStart(2,'0') + '-' +
+    String(Math.floor(Math.random()*9000)+1000);
+
+  const total = cart.reduce((s,i)=>s+(i.price*i.qty),0);
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+
+  document.getElementById('p-items').innerHTML = cart.map(item => `
+    <tr>
+      <td>
+        <strong>${item.name}</strong>
+        ${item.mods ? `<span class="td-mods">${item.mods}</span>` : ''}
+        ${item.note ? `<span class="td-mods">📝 ${item.note}</span>` : ''}
+      </td>
+      <td>${item.qty}&times;</td>
+      <td>€&nbsp;${item.price.toFixed(2).replace('.',',')}</td>
+      <td>€&nbsp;${(item.price*item.qty).toFixed(2).replace('.',',')}</td>
+    </tr>`).join('');
+
+  document.getElementById('p-totals').innerHTML = `
+    <div class="print-tot-row"><span>Anzahl Artikel</span><span>${count} Stück</span></div>
+    <div class="print-tot-row"><span>Zwischensumme</span><span>€&nbsp;${total.toFixed(2).replace('.',',')}</span></div>
+    <div class="print-tot-row big"><span>GESAMTBETRAG</span><span>€&nbsp;${total.toFixed(2).replace('.',',')}</span></div>
+    <p class="print-legal">* Preise inkl. MwSt. · Dieser Bestellschein ist keine Rechnung im steuerrechtlichen Sinne.</p>`;
+
+  window.print();
+}
+
+// ══════════════════════════════════════════════════════
+//  SEARCH
+// ══════════════════════════════════════════════════════
+function doSearch(q) {
+  q = q.trim().toLowerCase();
+  document.getElementById('search-clr').classList.toggle('show', q.length > 0);
+  const all = document.querySelectorAll('.mcard');
+  all.forEach(c => {
+    const name = (c.dataset.name||'').toLowerCase();
+    const desc = (c.querySelector('.mcard-desc')||{}).textContent?.toLowerCase()||'';
+    c.classList.toggle('hidden', q && !name.includes(q) && !desc.includes(q));
+  });
+}
+function clearSearch() {
+  document.getElementById('search-in').value='';
+  document.getElementById('search-clr').classList.remove('show');
+  document.querySelectorAll('.mcard').forEach(c=>c.classList.remove('hidden'));
+}
+
+// ══════════════════════════════════════════════════════
+//  CATEGORY NAV
+// ══════════════════════════════════════════════════════
+const secMap = {
+  alle: ['sec-deals','sec-kebap','sec-pizza','sec-veggie','sec-tasche','sec-pasta','sec-salat','sec-getraenke','sec-snacks'],
+  kebap: ['sec-kebap'],
+  pizza: ['sec-pizza','sec-veggie','sec-tasche'],
+  veggie: ['sec-veggie'],
+  tasche: ['sec-tasche'],
+  pasta: ['sec-pasta'],
+  salat: ['sec-salat'],
+  getraenke: ['sec-getraenke','sec-snacks'],
+  deals: ['sec-deals'],
+};
+function showCat(cat, btn) {
+  document.querySelectorAll('.nav-cat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const show = secMap[cat] || secMap.alle;
+  Object.values(secMap).flat().filter((v,i,a)=>a.indexOf(v)===i).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = show.includes(id) ? '' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  PIDE TIMER
+// ══════════════════════════════════════════════════════
+function updatePide() {
+  const now = new Date();
+  const day = now.getDay(), h = now.getHours(), m = now.getMinutes();
+  const isDay = day>=1&&day<=4;
+  const afterStart = h>11||(h===11&&m>=30);
+  const beforeEnd = h<21||(h===21&&m<30);
+  const active = isDay && afterStart && beforeEnd;
+
+  document.getElementById('pide-active').style.display = active?'block':'none';
+  document.getElementById('pide-label-txt').style.display = active?'none':'block';
+  document.getElementById('pide-clock').style.display = active?'none':'block';
+
+  if(!active) {
+    let next = new Date(now);
+    let days = (1-day+7)%7||7;
+    if(isDay && !afterStart) days=0;
+    else if(isDay && !beforeEnd) days = day<4?1:(8-day);
+    next.setDate(next.getDate()+days);
+    next.setHours(11,30,0,0);
+    const diff = Math.max(0, next-now);
+    const dh = Math.floor(diff/3600000);
+    const dm = Math.floor((diff%3600000)/60000);
+    const ds = Math.floor((diff%60000)/1000);
+    document.getElementById('pide-clock').textContent =
+      String(dh).padStart(2,'0')+':'+String(dm).padStart(2,'0')+':'+String(ds).padStart(2,'0');
+  }
+}
+setInterval(updatePide,1000); updatePide();
+
+// ══════════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════════
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+// ══════════════════════════════════════════════════════
+//  SCROLL REVEAL
+// ══════════════════════════════════════════════════════
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, {threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+</script>
+</body>
+</html>
