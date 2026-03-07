@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>بث الصوت المتأخر</title>
+  <title>بث الصوت</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg: #06080f;
       --card: #0d1018;
@@ -17,9 +16,7 @@
       --red: #ff4757;
       --text: #e8f0fe;
       --muted: #4a5270;
-      --glow-c: rgba(0, 229, 255, 0.15);
     }
-
     body {
       background: var(--bg);
       font-family: 'Tajawal', sans-serif;
@@ -29,496 +26,338 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 32px;
+      gap: 28px;
       padding: 24px;
-      overflow: hidden;
     }
-
-    /* Scanline overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 4px
-      );
-      pointer-events: none;
-      z-index: 100;
-    }
-
-    /* Ambient glow */
     body::after {
       content: '';
       position: fixed;
-      top: 10%;
-      left: 50%;
+      top: 0; left: 50%;
       transform: translateX(-50%);
-      width: 60vw;
-      height: 60vw;
+      width: 60vw; height: 60vw;
       background: radial-gradient(circle, rgba(0,229,255,0.05) 0%, transparent 65%);
       pointer-events: none;
     }
-
-    /* Title */
-    .title {
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
+    .title { text-align: center; position: relative; z-index: 1; }
     .title h1 {
-      font-size: 1.8rem;
-      font-weight: 900;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-size: 1.8rem; font-weight: 900; letter-spacing: 2px;
       color: var(--cyan);
       text-shadow: 0 0 30px rgba(0,229,255,0.6), 0 0 60px rgba(0,229,255,0.2);
     }
-    .title p {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-    }
+    .title p { margin-top: 6px; color: var(--muted); font-size: 0.88rem; }
 
-    /* Main visualizer card */
-    .viz-card {
-      position: relative;
-      z-index: 1;
-      width: min(500px, 95vw);
+    .card {
+      position: relative; z-index: 1;
+      width: min(460px, 95vw);
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 30px 26px 26px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-      box-shadow:
-        0 0 0 1px rgba(0,229,255,0.05),
-        0 20px 60px rgba(0,0,0,0.7),
-        inset 0 1px 0 rgba(255,255,255,0.03);
+      padding: 28px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03);
     }
 
-    /* Circular waveform canvas */
     canvas {
-      display: block;
-      border-radius: 50%;
-      box-shadow: 0 0 40px rgba(0,229,255,0.12);
+      display: block; border-radius: 50%;
+      box-shadow: 0 0 40px rgba(0,229,255,0.1);
     }
 
-    /* Delay slider */
-    .delay-section {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .delay-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .delay-label span {
-      font-size: 0.85rem;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-    }
-    .delay-label strong {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--cyan);
-      text-shadow: 0 0 12px rgba(0,229,255,0.5);
-    }
+    .delay-section { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+    .delay-label { display: flex; justify-content: space-between; align-items: center; }
+    .delay-label span { font-size: 0.85rem; color: var(--muted); }
+    .delay-label strong { font-size: 1.1rem; font-weight: 700; color: var(--cyan); text-shadow: 0 0 12px rgba(0,229,255,0.5); }
     input[type=range] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 4px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 10px rgba(0,229,255,0.6);
-      cursor: pointer;
-      transition: transform 0.15s;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 10px rgba(0,229,255,0.6); cursor: pointer;
     }
-    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
-    /* Volume meter */
-    .meter-row {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .meter-row { width: 100%; display: flex; align-items: center; gap: 12px; }
     .meter-label { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
-    .meter-track {
-      flex: 1;
-      height: 6px;
-      background: var(--border);
-      border-radius: 3px;
-      overflow: hidden;
-    }
+    .meter-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
     .meter-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 3px;
+      height: 100%; width: 0%; border-radius: 3px;
       background: linear-gradient(90deg, var(--cyan2), var(--cyan));
-      box-shadow: 0 0 8px rgba(0,229,255,0.4);
       transition: width 0.05s;
     }
 
-    /* Status */
-    .status-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.88rem;
-      color: var(--muted);
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--muted);
-      transition: background 0.3s, box-shadow 0.3s;
-    }
-    .dot.active {
-      background: var(--cyan);
-      box-shadow: 0 0 8px rgba(0,229,255,0.8);
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-    .dot.recording {
-      background: var(--red);
-      box-shadow: 0 0 8px rgba(255,71,87,0.8);
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+    .status-row { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: all 0.3s; }
+    .dot.rec  { background: var(--red);  box-shadow: 0 0 8px rgba(255,71,87,0.8);  animation: blink 1s infinite; }
+    .dot.play { background: var(--cyan); box-shadow: 0 0 8px rgba(0,229,255,0.8);  animation: blink 1.5s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* Hold button */
-    .hold-btn-wrap {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
+    .hold-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
     .hold-btn {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      font-family: 'Tajawal', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 700;
+      width: 140px; height: 140px; border-radius: 50%; border: none; cursor: pointer;
+      font-family: 'Tajawal', sans-serif; font-weight: 700;
       color: #001a20;
       background: linear-gradient(135deg, #00c4e0, #0095b3);
-      box-shadow: 0 0 0 0 rgba(0,229,255,0.4), 0 6px 30px rgba(0,229,255,0.25);
-      transition: transform 0.12s, box-shadow 0.12s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: none;
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 6px 30px rgba(0,229,255,0.3);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      user-select: none; -webkit-user-select: none; touch-action: none;
+      transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
     }
-    .hold-btn .mic-icon { font-size: 2.2rem; line-height: 1; }
-    .hold-btn .btn-label { font-size: 0.78rem; letter-spacing: 0.5px; }
-
-    .hold-btn:not(:disabled):hover {
-      box-shadow: 0 0 0 0 rgba(0,229,255,0.4), 0 8px 36px rgba(0,229,255,0.4);
-    }
+    .hold-btn .icon { font-size: 2.4rem; line-height: 1; }
+    .hold-btn .lbl  { font-size: 0.8rem; letter-spacing: 0.4px; }
     .hold-btn.pressed {
-      transform: scale(0.93);
+      transform: scale(0.92);
       background: linear-gradient(135deg, #ff6b6b, #ff4757);
       color: #fff;
-      box-shadow: 0 0 0 18px rgba(255,71,87,0.15), 0 0 60px rgba(255,71,87,0.3) !important;
-      animation: holdPulse 1s ease-in-out infinite;
+      box-shadow: 0 0 0 20px rgba(255,71,87,0.12), 0 0 60px rgba(255,71,87,0.3);
+      animation: rpulse 1s ease-in-out infinite;
     }
-    .hold-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
+    @keyframes rpulse {
+      0%,100%{ box-shadow: 0 0 0 20px rgba(255,71,87,0.12), 0 0 60px rgba(255,71,87,0.3); }
+      50%    { box-shadow: 0 0 0 32px rgba(255,71,87,0.04), 0 0 80px rgba(255,71,87,0.1); }
     }
-    @keyframes holdPulse {
-      0%,100% { box-shadow: 0 0 0 18px rgba(255,71,87,0.15), 0 0 60px rgba(255,71,87,0.3); }
-      50%      { box-shadow: 0 0 0 28px rgba(255,71,87,0.05), 0 0 80px rgba(255,71,87,0.15); }
-    }
-
-    .hold-hint {
-      font-size: 0.78rem;
-      color: var(--muted);
-      letter-spacing: 0.4px;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Warning */
-    .warning {
-      font-size: 0.78rem;
-      color: var(--muted);
-      text-align: center;
-      line-height: 1.5;
-      padding: 0 10px;
-    }
-    .warning b { color: rgba(0,229,255,0.6); }
+    .hold-hint { font-size: 0.78rem; color: var(--muted); }
+    .warning { font-size: 0.76rem; color: var(--muted); text-align: center; line-height: 1.6; }
+    .warning b { color: rgba(0,229,255,0.5); }
   </style>
 </head>
 <body>
 
 <div class="title">
   <h1>🎙 بث الصوت</h1>
-  <p>اضغط مع الاستمرار للكلام • اترك للصمت</p>
+  <p>اضغط مع الاستمرار للتسجيل — يُشغَّل بعد التأخير</p>
 </div>
 
-<div class="viz-card">
+<div class="card">
+  <canvas id="cv" width="200" height="200"></canvas>
 
-  <!-- Canvas visualizer -->
-  <canvas id="canvas" width="220" height="220"></canvas>
-
-  <!-- Delay slider -->
   <div class="delay-section">
     <div class="delay-label">
-      <span>⏱ التأخير الزمني</span>
-      <strong id="delayVal">5 ثانية</strong>
+      <span>⏱ التأخير</span>
+      <strong id="dval">5 ثانية</strong>
     </div>
-    <input type="range" id="delaySlider" min="0" max="10" step="0.5" value="5"/>
+    <input type="range" id="dslider" min="0" max="10" step="0.5" value="5"/>
   </div>
 
-  <!-- Volume meter -->
   <div class="meter-row">
-    <span class="meter-label">🎚 الصوت</span>
-    <div class="meter-track">
-      <div class="meter-fill" id="meterFill"></div>
-    </div>
+    <span class="meter-label">🎚 مستوى الصوت</span>
+    <div class="meter-track"><div class="meter-fill" id="mfill"></div></div>
   </div>
 
-  <!-- Status -->
   <div class="status-row">
-    <div class="dot" id="statusDot"></div>
-    <span id="statusText">في انتظار بدء التشغيل</span>
+    <div class="dot" id="sdot"></div>
+    <span id="stxt">اضغط الزر للبدء</span>
   </div>
 
-  <!-- Hold button -->
-  <div class="hold-btn-wrap">
-    <button class="hold-btn" id="holdBtn">
-      <span class="mic-icon">🎙</span>
-      <span class="btn-label" id="holdLabel">اضغط مع الاستمرار</span>
+  <div class="hold-wrap">
+    <button class="hold-btn" id="hbtn">
+      <span class="icon" id="hicon">🎙</span>
+      <span class="lbl"  id="hlbl">اضغط مع الاستمرار</span>
     </button>
-    <span class="hold-hint">اضغط واستمر للكلام • اترك لإيقاف المايكروفون</span>
+    <span class="hold-hint">اضغط للتسجيل • اترك للتشغيل بعد التأخير</span>
   </div>
 
   <p class="warning">
-    سيطلب المتصفح الإذن للوصول إلى المايكروفون.<br/>
-    استخدم <b>سماعات أذن</b> لتجنب الصدى (Echo).
+    استخدم <b>سماعات أذن</b> لتجنب الصدى.<br/>
+    افتح الملف في <b>Chrome</b> أو <b>Edge</b> مباشرةً.
   </p>
 </div>
 
 <script>
-  // ── State ──────────────────────────────────────
-  let audioCtx    = null;
-  let sourceNode  = null;
-  let delayNode   = null;
-  let gainNode    = null;
-  let analyserNode= null;
-  let stream      = null;
-  let animId      = null;
-  let volumeId    = null;
-  let ready       = false;   // mic permission granted & nodes built
-  let pressing    = false;   // button currently held
+  const cv      = document.getElementById('cv');
+  const ctx     = cv.getContext('2d');
+  const dslider = document.getElementById('dslider');
+  const dval    = document.getElementById('dval');
+  const hbtn    = document.getElementById('hbtn');
+  const hicon   = document.getElementById('hicon');
+  const hlbl    = document.getElementById('hlbl');
+  const sdot    = document.getElementById('sdot');
+  const stxt    = document.getElementById('stxt');
+  const mfill   = document.getElementById('mfill');
 
-  // ── UI refs ────────────────────────────────────
-  const canvas      = document.getElementById('canvas');
-  const ctx2d       = canvas.getContext('2d');
-  const delaySlider = document.getElementById('delaySlider');
-  const delayVal    = document.getElementById('delayVal');
-  const holdBtn     = document.getElementById('holdBtn');
-  const holdLabel   = document.getElementById('holdLabel');
-  const statusDot   = document.getElementById('statusDot');
-  const statusText  = document.getElementById('statusText');
-  const meterFill   = document.getElementById('meterFill');
+  let micStream  = null;
+  let recorder   = null;
+  let analyser   = null;
+  let aCtx       = null;
+  let chunks     = [];
+  let pressing   = false;
+  let vizId      = null;
+  let meterTid   = null;
 
-  // ── Slider ─────────────────────────────────────
-  delaySlider.addEventListener('input', () => {
-    const v = parseFloat(delaySlider.value);
-    delayVal.textContent = v === 0 ? 'بدون تأخير' : `${v} ثانية`;
-    if (delayNode) delayNode.delayTime.setTargetAtTime(v, audioCtx.currentTime, 0.01);
+  // ── Slider ───────────────────────────────────────
+  dslider.addEventListener('input', () => {
+    const v = parseFloat(dslider.value);
+    dval.textContent = v === 0 ? 'بدون تأخير' : `${v} ثانية`;
   });
 
-  // ── Init: request mic once on page load ────────
+  // ── Init mic (called once on first press) ────────
   async function initMic() {
-    setStatus('⏳ جارٍ طلب إذن المايكروفون...', false);
+    setStatus('⏳ طلب إذن المايكروفون...', '');
     try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
-      });
-    } catch (e) {
-      setStatus('❌ لم يُمنح إذن المايكروفون', false);
-      return;
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch(e) {
+      setStatus('❌ لم يُمنح إذن المايكروفون', '');
+      micStream = null;
+      return false;
     }
 
-    audioCtx    = new (window.AudioContext || window.webkitAudioContext)();
-    sourceNode  = audioCtx.createMediaStreamSource(stream);
+    aCtx     = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = aCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.8;
+    aCtx.createMediaStreamSource(micStream).connect(analyser);
 
-    delayNode = audioCtx.createDelay(11);
-    delayNode.delayTime.value = parseFloat(delaySlider.value);
-
-    // Gain starts at 0 (muted) until button held
-    gainNode = audioCtx.createGain();
-    gainNode.gain.value = 0;
-
-    analyserNode = audioCtx.createAnalyser();
-    analyserNode.fftSize = 256;
-    analyserNode.smoothingTimeConstant = 0.8;
-
-    // Graph: mic → analyser → delay → gain → speakers
-    sourceNode.connect(analyserNode);
-    analyserNode.connect(delayNode);
-    delayNode.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-
-    ready = true;
-    holdBtn.disabled = false;
-    setStatus('🟢 جاهز — اضغط مع الاستمرار للكلام', false);
-    drawVisualizer();
-    updateMeter();
+    startViz();
+    startMeter();
+    setStatus('🟢 جاهز — اضغط مع الاستمرار للكلام', '');
+    return true;
   }
 
-  // ── Hold press: unmute ─────────────────────────
-  function pressStart(e) {
+  // ── Press ON ─────────────────────────────────────
+  async function pressOn(e) {
     e.preventDefault();
-    if (!ready || pressing) return;
+    if (pressing) return;
+
+    if (!micStream) {
+      const ok = await initMic();
+      if (!ok) return;
+    }
+
     pressing = true;
-    gainNode.gain.setTargetAtTime(1, audioCtx.currentTime, 0.02);
-    holdBtn.classList.add('pressed');
-    holdLabel.textContent = '🔴 يستمع...';
-    setStatus('🎙 يستمع ويُسجّل...', true, true);
+    chunks   = [];
+
+    const mime = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/ogg','audio/mp4','']
+                 .find(m => m === '' || MediaRecorder.isTypeSupported(m));
+
+    recorder = new MediaRecorder(micStream, mime ? { mimeType: mime } : {});
+    recorder.ondataavailable = ev => { if (ev.data && ev.data.size > 0) chunks.push(ev.data); };
+    recorder.start(100);
+
+    hbtn.classList.add('pressed');
+    hicon.textContent = '🔴';
+    hlbl.textContent  = 'يُسجّل...';
+    setStatus('🎙 يُسجّل...', 'rec');
   }
 
-  // ── Hold release: mute ─────────────────────────
-  function pressEnd(e) {
-    e.preventDefault();
-    if (!ready || !pressing) return;
+  // ── Press OFF ────────────────────────────────────
+  function pressOff(e) {
+    if (e) e.preventDefault();
+    if (!pressing || !recorder || recorder.state === 'inactive') return;
     pressing = false;
-    gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
-    holdBtn.classList.remove('pressed');
-    holdLabel.textContent = 'اضغط مع الاستمرار';
 
-    const delay = parseFloat(delaySlider.value);
-    if (delay > 0) {
-      setStatus(`⏳ سيُبث الصوت خلال ${delay} ثانية...`, true, false);
-      setTimeout(() => {
-        if (!pressing) setStatus('🟢 جاهز — اضغط مع الاستمرار للكلام', false);
-      }, delay * 1000 + 500);
-    } else {
-      setStatus('🟢 جاهز — اضغط مع الاستمرار للكلام', false);
-    }
-  }
+    hbtn.classList.remove('pressed');
+    hicon.textContent = '🎙';
 
-  // ── Mouse & Touch events ───────────────────────
-  holdBtn.addEventListener('mousedown',  pressStart);
-  holdBtn.addEventListener('mouseup',    pressEnd);
-  holdBtn.addEventListener('mouseleave', pressEnd);
-  holdBtn.addEventListener('touchstart', pressStart, { passive: false });
-  holdBtn.addEventListener('touchend',   pressEnd,   { passive: false });
-  holdBtn.addEventListener('touchcancel',pressEnd,   { passive: false });
+    recorder.stop();
+    recorder.onstop = () => {
+      if (!chunks.length) { setStatus('⚠️ لم يُسجَّل شيء', ''); hlbl.textContent = 'اضغط مع الاستمرار'; return; }
 
-  // ── Circular waveform visualizer ───────────────
-  function drawVisualizer() {
-    animId = requestAnimationFrame(drawVisualizer);
+      const blob  = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+      const url   = URL.createObjectURL(blob);
+      const delay = parseFloat(dslider.value) * 1000;
 
-    const W = canvas.width, H = canvas.height;
-    const cx = W / 2, cy = H / 2;
-    const R = 70;
-
-    ctx2d.clearRect(0, 0, W, H);
-
-    ctx2d.beginPath();
-    ctx2d.arc(cx, cy, R + 22, 0, Math.PI * 2);
-    ctx2d.fillStyle = pressing ? 'rgba(255,71,87,0.05)' : 'rgba(0,229,255,0.03)';
-    ctx2d.fill();
-
-    ctx2d.beginPath();
-    ctx2d.arc(cx, cy, R - 8, 0, Math.PI * 2);
-    ctx2d.strokeStyle = pressing ? 'rgba(255,71,87,0.2)' : 'rgba(0,229,255,0.12)';
-    ctx2d.lineWidth = 1;
-    ctx2d.stroke();
-
-    if (analyserNode) {
-      const bufLen = analyserNode.frequencyBinCount;
-      const data   = new Uint8Array(bufLen);
-      analyserNode.getByteTimeDomainData(data);
-      const slices = Math.min(bufLen, 128);
-      const step   = Math.floor(bufLen / slices);
-
-      ctx2d.beginPath();
-      for (let i = 0; i < slices; i++) {
-        const angle = (i / slices) * Math.PI * 2 - Math.PI / 2;
-        const amp   = (data[i * step] - 128) / 128;
-        const r     = R + amp * 38;
-        const x     = cx + r * Math.cos(angle);
-        const y     = cy + r * Math.sin(angle);
-        i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
-      }
-      ctx2d.closePath();
-
-      const grad = ctx2d.createLinearGradient(0, 0, W, H);
-      if (pressing) {
-        grad.addColorStop(0, '#ff6b6b');
-        grad.addColorStop(1, '#ff4757');
+      if (delay > 0) {
+        const sec = parseFloat(dslider.value);
+        hlbl.textContent = `⏳ ${sec}ث`;
+        setStatus(`⏳ يُشغَّل بعد ${sec} ثانية...`, 'play');
+        setTimeout(() => playAudio(url), delay);
       } else {
-        grad.addColorStop(0, '#00e5ff');
-        grad.addColorStop(1, '#0077b6');
+        hlbl.textContent = 'اضغط مع الاستمرار';
+        playAudio(url);
       }
-      ctx2d.strokeStyle = grad;
-      ctx2d.lineWidth = 2.5;
-      ctx2d.shadowColor = pressing ? '#ff4757' : '#00e5ff';
-      ctx2d.shadowBlur = pressing ? 14 : 10;
-      ctx2d.stroke();
-      ctx2d.shadowBlur = 0;
+    };
+  }
+
+  // ── Play audio blob ──────────────────────────────
+  function playAudio(url) {
+    const audio = new Audio(url);
+    setStatus('🔊 يُشغّل الصوت...', 'play');
+    hicon.textContent = '🔊';
+    hlbl.textContent  = 'يُشغّل...';
+    audio.play().catch(err => {
+      setStatus('❌ خطأ في التشغيل', '');
+      hlbl.textContent = 'اضغط مع الاستمرار';
+      hicon.textContent = '🎙';
+    });
+    audio.onended = () => {
+      URL.revokeObjectURL(url);
+      setStatus('🟢 جاهز — اضغط مع الاستمرار للكلام', '');
+      hlbl.textContent  = 'اضغط مع الاستمرار';
+      hicon.textContent = '🎙';
+    };
+  }
+
+  // ── Attach events ────────────────────────────────
+  hbtn.addEventListener('mousedown',   pressOn,  { passive: false });
+  hbtn.addEventListener('mouseup',     pressOff, { passive: false });
+  hbtn.addEventListener('mouseleave',  pressOff, { passive: false });
+  hbtn.addEventListener('touchstart',  pressOn,  { passive: false });
+  hbtn.addEventListener('touchend',    pressOff, { passive: false });
+  hbtn.addEventListener('touchcancel', pressOff, { passive: false });
+
+  // ── Visualizer ───────────────────────────────────
+  function startViz() {
+    function draw() {
+      vizId = requestAnimationFrame(draw);
+      const W = cv.width, H = cv.height, cx = W/2, cy = H/2, R = 65;
+      ctx.clearRect(0,0,W,H);
+
+      ctx.beginPath(); ctx.arc(cx,cy,R+20,0,Math.PI*2);
+      ctx.fillStyle = pressing ? 'rgba(255,71,87,0.05)' : 'rgba(0,229,255,0.03)';
+      ctx.fill();
+
+      ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
+      ctx.strokeStyle = pressing ? 'rgba(255,71,87,0.2)' : 'rgba(0,229,255,0.1)';
+      ctx.lineWidth = 1; ctx.stroke();
+
+      if (analyser) {
+        const buf = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteTimeDomainData(buf);
+        const N = Math.min(buf.length, 128);
+        ctx.beginPath();
+        for (let i = 0; i < N; i++) {
+          const angle = (i/N)*Math.PI*2 - Math.PI/2;
+          const amp   = (buf[Math.floor(i*buf.length/N)] - 128) / 128;
+          const r     = R + amp*35;
+          const x = cx + r*Math.cos(angle), y = cy + r*Math.sin(angle);
+          i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        }
+        ctx.closePath();
+        const g = ctx.createLinearGradient(0,0,W,H);
+        pressing ? (g.addColorStop(0,'#ff6b6b'), g.addColorStop(1,'#ff4757'))
+                 : (g.addColorStop(0,'#00e5ff'), g.addColorStop(1,'#0077b6'));
+        ctx.strokeStyle = g; ctx.lineWidth = 2.5;
+        ctx.shadowColor = pressing ? '#ff4757' : '#00e5ff';
+        ctx.shadowBlur = 12; ctx.stroke(); ctx.shadowBlur = 0;
+      }
     }
-
-    ctx2d.font = '28px serif';
-    ctx2d.textAlign = 'center';
-    ctx2d.textBaseline = 'middle';
-    ctx2d.fillText(pressing ? '🔴' : '🎙', cx, cy);
+    draw();
   }
 
-  // ── Volume meter ───────────────────────────────
-  function updateMeter() {
-    if (!analyserNode) { volumeId = setTimeout(updateMeter, 60); return; }
-    const data = new Uint8Array(analyserNode.frequencyBinCount);
-    analyserNode.getByteFrequencyData(data);
-    const avg = data.reduce((a, b) => a + b, 0) / data.length;
-    meterFill.style.width = Math.min(100, avg * 2.2) + '%';
-    volumeId = setTimeout(updateMeter, 60);
+  function startMeter() {
+    function tick() {
+      meterTid = setTimeout(tick, 60);
+      if (!analyser) return;
+      const d = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(d);
+      const avg = d.reduce((a,b)=>a+b,0)/d.length;
+      mfill.style.width = Math.min(100, avg*2.5)+'%';
+    }
+    tick();
   }
 
-  function setStatus(msg, active = false, rec = false) {
-    statusText.textContent = msg;
-    statusDot.className = 'dot' + (active ? (rec ? ' recording' : ' active') : '');
+  function setStatus(msg, cls) {
+    stxt.textContent = msg;
+    sdot.className = 'dot' + (cls ? ' '+cls : '');
   }
 
-  // ── Draw idle canvas then init mic ─────────────
-  drawVisualizer();
-  initMic();
+  // Idle canvas draw
+  (function() {
+    const W=cv.width, H=cv.height, cx=W/2, cy=H/2;
+    ctx.beginPath(); ctx.arc(cx,cy,65,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,229,255,0.08)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='28px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('🎙',cx,cy);
+  })();
 </script>
 </body>
 </html>
