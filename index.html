@@ -285,7 +285,7 @@
 
 <div class="title">
   <h1>🎙 بث الصوت</h1>
-  <p>يُسجّل صوتك ويُعيد بثه بعد التأخير</p>
+  <p>اضغط مع الاستمرار للكلام • اترك للصمت</p>
 </div>
 
 <div class="viz-card">
@@ -318,7 +318,7 @@
 
   <!-- Hold button -->
   <div class="hold-btn-wrap">
-    <button class="hold-btn" id="holdBtn" disabled>
+    <button class="hold-btn" id="holdBtn">
       <span class="mic-icon">🎙</span>
       <span class="btn-label" id="holdLabel">اضغط مع الاستمرار</span>
     </button>
@@ -333,36 +333,38 @@
 
 <script>
   // ── State ──────────────────────────────────────
-  let audioCtx = null;
-  let sourceNode = null;
-  let delayNode = null;
-  let gainNode = null;
-  let analyserNode = null;
-  let stream = null;
-  let animId = null;
-  let volumeId = null;
-  let running = false;
+  let audioCtx    = null;
+  let sourceNode  = null;
+  let delayNode   = null;
+  let gainNode    = null;
+  let analyserNode= null;
+  let stream      = null;
+  let animId      = null;
+  let volumeId    = null;
+  let ready       = false;   // mic permission granted & nodes built
+  let pressing    = false;   // button currently held
 
   // ── UI refs ────────────────────────────────────
   const canvas      = document.getElementById('canvas');
   const ctx2d       = canvas.getContext('2d');
   const delaySlider = document.getElementById('delaySlider');
   const delayVal    = document.getElementById('delayVal');
-  const startBtn    = document.getElementById('startBtn');
-  const stopBtn     = document.getElementById('stopBtn');
+  const holdBtn     = document.getElementById('holdBtn');
+  const holdLabel   = document.getElementById('holdLabel');
   const statusDot   = document.getElementById('statusDot');
   const statusText  = document.getElementById('statusText');
   const meterFill   = document.getElementById('meterFill');
 
-  // ── Slider live update ─────────────────────────
+  // ── Slider ─────────────────────────────────────
   delaySlider.addEventListener('input', () => {
     const v = parseFloat(delaySlider.value);
     delayVal.textContent = v === 0 ? 'بدون تأخير' : `${v} ثانية`;
     if (delayNode) delayNode.delayTime.setTargetAtTime(v, audioCtx.currentTime, 0.01);
   });
 
-  // ── Start ──────────────────────────────────────
-  async function startStream() {
+  // ── Init: request mic once on page load ────────
+  async function initMic() {
+    setStatus('⏳ جارٍ طلب إذن المايكروفون...', false);
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
@@ -372,63 +374,74 @@
       return;
     }
 
-    audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
-    sourceNode = audioCtx.createMediaStreamSource(stream);
+    audioCtx    = new (window.AudioContext || window.webkitAudioContext)();
+    sourceNode  = audioCtx.createMediaStreamSource(stream);
 
-    // Delay
-    const maxDelay = 11;
-    delayNode = audioCtx.createDelay(maxDelay);
+    delayNode = audioCtx.createDelay(11);
     delayNode.delayTime.value = parseFloat(delaySlider.value);
 
-    // Gain
+    // Gain starts at 0 (muted) until button held
     gainNode = audioCtx.createGain();
-    gainNode.gain.value = 1;
+    gainNode.gain.value = 0;
 
-    // Analyser for visualizer
     analyserNode = audioCtx.createAnalyser();
     analyserNode.fftSize = 256;
     analyserNode.smoothingTimeConstant = 0.8;
 
-    // Graph: mic → analyser → delay → gain → output
+    // Graph: mic → analyser → delay → gain → speakers
     sourceNode.connect(analyserNode);
     analyserNode.connect(delayNode);
     delayNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
 
-    running = true;
-    startBtn.disabled = true;
-    stopBtn.classList.add('visible');
-    delaySlider.disabled = false;
-
-    setStatus('🔴 يُسجّل ويبث...', true, true);
+    ready = true;
+    holdBtn.disabled = false;
+    setStatus('🟢 جاهز — اضغط مع الاستمرار للكلام', false);
     drawVisualizer();
     updateMeter();
   }
 
-  // ── Stop ───────────────────────────────────────
-  function stopStream() {
-    running = false;
-    cancelAnimationFrame(animId);
-    clearTimeout(volumeId);
-
-    if (gainNode) gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
-
-    setTimeout(() => {
-      if (stream) stream.getTracks().forEach(t => t.stop());
-      if (audioCtx) audioCtx.close();
-      stream = sourceNode = delayNode = gainNode = analyserNode = audioCtx = null;
-    }, 200);
-
-    startBtn.disabled = false;
-    stopBtn.classList.remove('visible');
-    meterFill.style.width = '0%';
-    setStatus('⏹ توقف البث', false);
-    clearCanvas();
+  // ── Hold press: unmute ─────────────────────────
+  function pressStart(e) {
+    e.preventDefault();
+    if (!ready || pressing) return;
+    pressing = true;
+    gainNode.gain.setTargetAtTime(1, audioCtx.currentTime, 0.02);
+    holdBtn.classList.add('pressed');
+    holdLabel.textContent = '🔴 يستمع...';
+    setStatus('🎙 يستمع ويُسجّل...', true, true);
   }
+
+  // ── Hold release: mute ─────────────────────────
+  function pressEnd(e) {
+    e.preventDefault();
+    if (!ready || !pressing) return;
+    pressing = false;
+    gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
+    holdBtn.classList.remove('pressed');
+    holdLabel.textContent = 'اضغط مع الاستمرار';
+
+    const delay = parseFloat(delaySlider.value);
+    if (delay > 0) {
+      setStatus(`⏳ سيُبث الصوت خلال ${delay} ثانية...`, true, false);
+      setTimeout(() => {
+        if (!pressing) setStatus('🟢 جاهز — اضغط مع الاستمرار للكلام', false);
+      }, delay * 1000 + 500);
+    } else {
+      setStatus('🟢 جاهز — اضغط مع الاستمرار للكلام', false);
+    }
+  }
+
+  // ── Mouse & Touch events ───────────────────────
+  holdBtn.addEventListener('mousedown',  pressStart);
+  holdBtn.addEventListener('mouseup',    pressEnd);
+  holdBtn.addEventListener('mouseleave', pressEnd);
+  holdBtn.addEventListener('touchstart', pressStart, { passive: false });
+  holdBtn.addEventListener('touchend',   pressEnd,   { passive: false });
+  holdBtn.addEventListener('touchcancel',pressEnd,   { passive: false });
 
   // ── Circular waveform visualizer ───────────────
   function drawVisualizer() {
-    if (!running) return;
     animId = requestAnimationFrame(drawVisualizer);
 
     const W = canvas.width, H = canvas.height;
@@ -437,61 +450,60 @@
 
     ctx2d.clearRect(0, 0, W, H);
 
-    // Background circle
     ctx2d.beginPath();
     ctx2d.arc(cx, cy, R + 22, 0, Math.PI * 2);
-    ctx2d.fillStyle = 'rgba(0,229,255,0.03)';
+    ctx2d.fillStyle = pressing ? 'rgba(255,71,87,0.05)' : 'rgba(0,229,255,0.03)';
     ctx2d.fill();
 
-    // Center circle
     ctx2d.beginPath();
     ctx2d.arc(cx, cy, R - 8, 0, Math.PI * 2);
-    ctx2d.strokeStyle = 'rgba(0,229,255,0.12)';
+    ctx2d.strokeStyle = pressing ? 'rgba(255,71,87,0.2)' : 'rgba(0,229,255,0.12)';
     ctx2d.lineWidth = 1;
     ctx2d.stroke();
 
-    if (!analyserNode) return;
+    if (analyserNode) {
+      const bufLen = analyserNode.frequencyBinCount;
+      const data   = new Uint8Array(bufLen);
+      analyserNode.getByteTimeDomainData(data);
+      const slices = Math.min(bufLen, 128);
+      const step   = Math.floor(bufLen / slices);
 
-    const bufLen = analyserNode.frequencyBinCount;
-    const data   = new Uint8Array(bufLen);
-    analyserNode.getByteTimeDomainData(data);
+      ctx2d.beginPath();
+      for (let i = 0; i < slices; i++) {
+        const angle = (i / slices) * Math.PI * 2 - Math.PI / 2;
+        const amp   = (data[i * step] - 128) / 128;
+        const r     = R + amp * 38;
+        const x     = cx + r * Math.cos(angle);
+        const y     = cy + r * Math.sin(angle);
+        i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
+      }
+      ctx2d.closePath();
 
-    const slices = Math.min(bufLen, 128);
-    const step   = Math.floor(bufLen / slices);
-
-    ctx2d.beginPath();
-    for (let i = 0; i < slices; i++) {
-      const angle = (i / slices) * Math.PI * 2 - Math.PI / 2;
-      const amp   = (data[i * step] - 128) / 128;
-      const r     = R + amp * 38;
-      const x     = cx + r * Math.cos(angle);
-      const y     = cy + r * Math.sin(angle);
-      i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
+      const grad = ctx2d.createLinearGradient(0, 0, W, H);
+      if (pressing) {
+        grad.addColorStop(0, '#ff6b6b');
+        grad.addColorStop(1, '#ff4757');
+      } else {
+        grad.addColorStop(0, '#00e5ff');
+        grad.addColorStop(1, '#0077b6');
+      }
+      ctx2d.strokeStyle = grad;
+      ctx2d.lineWidth = 2.5;
+      ctx2d.shadowColor = pressing ? '#ff4757' : '#00e5ff';
+      ctx2d.shadowBlur = pressing ? 14 : 10;
+      ctx2d.stroke();
+      ctx2d.shadowBlur = 0;
     }
-    ctx2d.closePath();
 
-    // Gradient stroke
-    const grad = ctx2d.createLinearGradient(0, 0, W, H);
-    grad.addColorStop(0, '#00e5ff');
-    grad.addColorStop(0.5, '#00b4d8');
-    grad.addColorStop(1, '#0077b6');
-    ctx2d.strokeStyle = grad;
-    ctx2d.lineWidth = 2.5;
-    ctx2d.shadowColor = '#00e5ff';
-    ctx2d.shadowBlur = 10;
-    ctx2d.stroke();
-    ctx2d.shadowBlur = 0;
-
-    // Mic icon in center
     ctx2d.font = '28px serif';
     ctx2d.textAlign = 'center';
     ctx2d.textBaseline = 'middle';
-    ctx2d.fillText('🎙', cx, cy);
+    ctx2d.fillText(pressing ? '🔴' : '🎙', cx, cy);
   }
 
   // ── Volume meter ───────────────────────────────
   function updateMeter() {
-    if (!running || !analyserNode) return;
+    if (!analyserNode) { volumeId = setTimeout(updateMeter, 60); return; }
     const data = new Uint8Array(analyserNode.frequencyBinCount);
     analyserNode.getByteFrequencyData(data);
     const avg = data.reduce((a, b) => a + b, 0) / data.length;
@@ -499,26 +511,14 @@
     volumeId = setTimeout(updateMeter, 60);
   }
 
-  function clearCanvas() {
-    ctx2d.clearRect(0, 0, canvas.width, canvas.height);
-    ctx2d.beginPath();
-    ctx2d.arc(canvas.width/2, canvas.height/2, 70, 0, Math.PI*2);
-    ctx2d.strokeStyle = 'rgba(0,229,255,0.08)';
-    ctx2d.lineWidth = 1;
-    ctx2d.stroke();
-    ctx2d.font = '32px serif';
-    ctx2d.textAlign = 'center';
-    ctx2d.textBaseline = 'middle';
-    ctx2d.fillText('🎙', canvas.width/2, canvas.height/2);
-  }
-
   function setStatus(msg, active = false, rec = false) {
     statusText.textContent = msg;
     statusDot.className = 'dot' + (active ? (rec ? ' recording' : ' active') : '');
   }
 
-  // Init canvas
-  clearCanvas();
+  // ── Draw idle canvas then init mic ─────────────
+  drawVisualizer();
+  initMic();
 </script>
 </body>
 </html>
